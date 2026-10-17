@@ -952,3 +952,254 @@ footer {
     margin-left: 0;
   }
 }
+
+
+/* TRIAD profile + roster database UI */
+.section-heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.section-heading-row .eyebrow {
+  margin-bottom: 10px;
+}
+
+.section-heading-row h2 {
+  margin: 0;
+}
+
+.profile-last-updated,
+.directory-count {
+  margin: 0 !important;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.profile-form {
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.profile-form-section {
+  padding: 30px;
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-form-section h3 {
+  margin: 0 0 22px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.profile-form-grid-identity {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-field {
+  display: grid;
+  gap: 8px;
+}
+
+.profile-field > span,
+.roster-search > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.profile-field input,
+.profile-field select,
+.roster-search input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  outline: 0;
+  padding: 0 13px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.profile-field input:focus,
+.profile-field select:focus,
+.roster-search input:focus {
+  border-color: var(--line-strong);
+}
+
+.profile-form-actions {
+  min-height: 78px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 20px 16px 30px;
+}
+
+.profile-form-status {
+  margin: 0 !important;
+  font-size: 13px;
+}
+
+.profile-form-status[data-status-type="error"] {
+  color: var(--text);
+  font-weight: 800;
+}
+
+.profile-form-status[data-status-type="success"] {
+  color: var(--text);
+  font-weight: 900;
+}
+
+.profile-form button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+.member-directory {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.member-card {
+  min-height: 150px;
+  padding: 24px;
+  background: var(--panel);
+}
+
+.member-card-label {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+}
+
+.member-card h3 {
+  margin: 30px 0 4px;
+  font-size: 22px;
+  letter-spacing: -.02em;
+}
+
+.member-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.roster-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
+}
+
+.roster-search {
+  width: min(320px, 100%);
+  display: grid;
+  gap: 7px;
+}
+
+.roster-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.roster-table {
+  width: 100%;
+  min-width: 1640px;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.roster-table th,
+.roster-table td {
+  padding: 13px 14px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.roster-table th:first-child,
+.roster-table td:first-child,
+.roster-table th:nth-child(2),
+.roster-table td:nth-child(2) {
+  text-align: left;
+}
+
+.roster-table th {
+  position: sticky;
+  top: 0;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.roster-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.roster-table th:last-child,
+.roster-table td:last-child {
+  border-right: 0;
+}
+
+.roster-name {
+  color: var(--text);
+  font-weight: 900;
+}
+
+@media (max-width: 850px) {
+  .profile-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .member-directory {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .section-heading-row,
+  .profile-form-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .profile-form-section {
+    padding: 24px 20px;
+  }
+
+  .profile-form-grid,
+  .profile-form-grid-identity,
+  .member-directory {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-form-actions {
+    padding: 20px;
+  }
+}
