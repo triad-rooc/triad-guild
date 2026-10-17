@@ -5,7 +5,10 @@
   const status = document.querySelector('[data-profile-status]');
   const updated = document.querySelector('[data-profile-updated]');
   const saveButton = document.querySelector('[data-profile-save]');
+  const editButton = document.querySelector('[data-profile-edit]');
   const numericFields = form.querySelectorAll('[data-number-kind]');
+  const editableFields = Array.from(form.querySelectorAll('input[name], select[name]'));
+  let isEditing = false;
   const jobField = form.elements.namedItem('job');
 
   const preview = {
@@ -137,6 +140,27 @@
     if (preview.mdamageReductionRange) preview.mdamageReductionRange.textContent = thresholdText(mReductionThresholds);
   };
 
+  const setEditing = (editing) => {
+    isEditing = Boolean(editing);
+    editableFields.forEach((field) => {
+      field.disabled = !isEditing;
+    });
+
+    if (saveButton) saveButton.disabled = !isEditing;
+    if (editButton) {
+      editButton.disabled = isEditing;
+      editButton.textContent = isEditing ? 'Editing Stats' : 'Edit Stats';
+    }
+
+    form.dataset.editing = isEditing ? 'true' : 'false';
+  };
+
+  editButton?.addEventListener('click', () => {
+    setEditing(true);
+    setStatus('Editing enabled. Update your stats, then press Save Profile.');
+    editableFields[0]?.focus();
+  });
+
   const sanitizeNumericValue = (value, kind) => {
     const text = String(value ?? '');
 
@@ -247,7 +271,8 @@
       }
 
       writeProfile(data.profile);
-      setStatus('Profile saved.', 'success');
+      setEditing(false);
+      setStatus('Profile saved. Press Edit Stats when you want to update it again.', 'success');
     } catch (error) {
       setStatus(error.message || 'Could not save your profile.', 'error');
     } finally {
@@ -255,6 +280,7 @@
     }
   });
 
+  setEditing(false);
   updateThresholdPreview();
   load();
 })();
