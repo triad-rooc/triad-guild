@@ -24,22 +24,37 @@
 <body>
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="TRIAD Home">
-      <span class="brand-logo ">
+      <span class="brand-logo">
         <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
         <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
       </span>
       <span class="brand-word">TRIAD</span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
-    <nav class="site-nav" aria-label="Primary navigation">
-      <a class="active" href="index.html">Home</a>
-      <a href="members.html">Members</a>
-      <a href="events.html">Events</a>
-      <a href="bidding.html">Bidding</a>
-      <a href="guides.html">Guides</a>
-      <a href="planner.html">EO / GL Planner</a>
-      <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
-    </nav>
+    <div class="header-menu" data-header-menu>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="active" href="index.html">Home</a>
+        <a class="member-only" href="members.html">Members</a>
+        <a class="" href="events.html">Events</a>
+        <div class="nav-dropdown member-only" data-nav-dropdown>
+          <button class="nav-dropdown-toggle" type="button" aria-expanded="false" data-nav-dropdown-toggle>
+            Guild Essentials <span class="nav-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a class="" href="bidding.html">Bidding</a>
+            <a class="" href="guides.html">Guides</a>
+            <a class="" href="planner.html">EO / GL Planner</a>
+            <a class="staff-only" href="roster.html">Roster</a>
+          </div>
+        </div>
+      </nav>
+      <div class="account-nav" data-account-nav>
+        <a class="login-link" data-login-link href="login.html">Login</a>
+        <a class="profile-link member-session-only" href="profile.html">My Profile</a>
+        <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
+        <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
+      </div>
+    </div>
   </header>
   <main>
     <section class="hero">
