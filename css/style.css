@@ -1069,7 +1069,25 @@ footer {
 
 .profile-form button:disabled {
   opacity: .5;
-  cursor: wait;
+  cursor: not-allowed;
+}
+
+.profile-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-field input:disabled,
+.profile-field select:disabled {
+  opacity: .58;
+  cursor: not-allowed;
+  background: var(--panel-2);
+  color: var(--muted);
+}
+
+.profile-form[data-editing="false"] .profile-field {
+  opacity: .82;
 }
 
 .member-directory {
@@ -1444,6 +1462,7 @@ footer {
 }
 
 .profile-threshold-card > strong.threshold-red,
+.profile-threshold-card > strong.threshold-orange,
 .profile-threshold-card > strong.threshold-yellow,
 .profile-threshold-card > strong.threshold-green {
   color: rgb(var(--threshold-rgb));
@@ -1473,5 +1492,13 @@ footer {
 
   .profile-threshold-grid {
     grid-template-columns: 1fr;
+  }
+
+  .profile-action-buttons {
+    width: 100%;
+  }
+
+  .profile-action-buttons .button {
+    flex: 1;
   }
 }
