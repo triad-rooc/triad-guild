@@ -1,8 +1,8 @@
 import { requireSession } from '../../lib/api-auth.js';
 import { JOBS, databaseError, ensureSchema, fullProfile, getSql } from '../../lib/db.js';
 
-const integerFields = ['hp','pattack','mattack','pdef','mdef','equipmentPdef','equipmentMdef'];
-const decimalFields = ['pdamage','mdamage','ignorePdef','ignoreMdef','critResist'];
+const integerFields = ['hp','pattack','mattack','pdef','mdef'];
+const decimalFields = ['pdamage','mdamage','equipmentPdef','equipmentMdef','ignorePdef','ignoreMdef','critResist'];
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -77,6 +77,11 @@ export default async function handler(req, res) {
       }
     }
 
+    // equipment_pdef / equipment_mdef are stored as basis points:
+    // 40.25% => 4025. This preserves two decimal places while keeping the existing BIGINT schema.
+    const equipmentPdefBasisPoints = Math.round(values.equipmentPdef * 100);
+    const equipmentMdefBasisPoints = Math.round(values.equipmentMdef * 100);
+
     const rows = await sql`
       INSERT INTO member_profiles (
         discord_id,
@@ -110,8 +115,8 @@ export default async function handler(req, res) {
         ${values.mdamage},
         ${values.pdef},
         ${values.mdef},
-        ${values.equipmentPdef},
-        ${values.equipmentMdef},
+        ${equipmentPdefBasisPoints},
+        ${equipmentMdefBasisPoints},
         ${values.ignorePdef},
         ${values.ignoreMdef},
         ${values.critResist},
