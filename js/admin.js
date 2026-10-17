@@ -17,6 +17,7 @@
     { key: 'dps', label: 'DPS' },
     { key: 'sniper', label: 'Sniper' },
     { key: 'support', label: 'Support' },
+    { key: 'bio', label: 'Biochemist' },
   ];
 
   const METRIC_META = [
@@ -78,7 +79,7 @@
       <section class="admin-role-threshold">
         <div class="admin-role-heading">
           <span>${escapeHtml(role.label)}</span>
-          <small>${role.key === 'support' ? 'Biochemist · High Priest · Bard/Gypsy' : role.key === 'sniper' ? 'Sniper only' : 'All other DPS jobs'}</small>
+          <small>${role.key === 'support' ? 'High Priest · Bard/Gypsy' : role.key === 'bio' ? 'Biochemist only' : role.key === 'sniper' ? 'Sniper only' : 'All other DPS jobs'}</small>
         </div>
         <div class="admin-metric-grid">
           ${METRIC_META.map((metric) => {

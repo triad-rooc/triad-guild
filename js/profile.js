@@ -31,7 +31,7 @@
     mdamageReductionRange: document.querySelector('[data-mdamage-reduction-range]'),
   };
 
-  const SUPPORT_JOBS = new Set(['Biochemist', 'High Priest', 'Bard/Gypsy']);
+  const SUPPORT_JOBS = new Set(['High Priest', 'Bard/Gypsy']);
   const COMPLETION_FIELDS = [
     'hp','pattack','mattack','pdamage','mdamage','pdamageReduction','mdamageReduction',
     'pdef','mdef','equipmentPdef','equipmentMdef','ignorePdef','ignoreMdef','critResist'
@@ -63,6 +63,7 @@
 
   const categoryForJob = (job) => {
     if (job === 'Sniper') return 'sniper';
+    if (job === 'Biochemist') return 'bio';
     if (SUPPORT_JOBS.has(job)) return 'support';
     return 'dps';
   };
@@ -71,6 +72,7 @@
     dps: 'DPS',
     sniper: 'Sniper',
     support: 'Support',
+    bio: 'Biochemist',
   }[category] || 'DPS');
 
   const thresholdFor = (job, metric) => {

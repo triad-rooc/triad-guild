@@ -6,7 +6,7 @@ import {
   saveGuildSettings,
 } from '../lib/db.js';
 
-const roleKeys = ['dps', 'sniper', 'support'];
+const roleKeys = ['dps', 'sniper', 'support', 'bio'];
 const metricKeys = ['pdef', 'mdef', 'pdamageReduction', 'mdamageReduction'];
 
 function readBody(req) {

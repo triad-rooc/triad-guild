@@ -11,7 +11,7 @@
   let roster = [];
   let settings = null;
 
-  const SUPPORT_JOBS = new Set(['Biochemist', 'High Priest', 'Bard/Gypsy']);
+  const SUPPORT_JOBS = new Set(['High Priest', 'Bard/Gypsy']);
 
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (character) => ({
     '&': '&amp;',
@@ -45,6 +45,7 @@
 
   const categoryForJob = (job) => {
     if (job === 'Sniper') return 'sniper';
+    if (job === 'Biochemist') return 'bio';
     if (SUPPORT_JOBS.has(job)) return 'support';
     return 'dps';
   };
@@ -53,6 +54,7 @@
     dps: 'DPS',
     sniper: 'Sniper',
     support: 'Support',
+    bio: 'Biochemist',
   }[category] || 'DPS');
 
   const thresholdFor = (job, metric) => {
@@ -157,14 +159,14 @@
       return `<strong><b>${escapeHtml(label)}</b> <i class="threshold-dot threshold-red"></i>≤${threshold.redMax} <i class="threshold-dot ${midClass}"></i>${threshold.midStart}–${threshold.greenStart - 1} <i class="threshold-dot threshold-green"></i>${threshold.greenStart}+</strong><small>${midLabel} = middle range</small>`;
     };
 
-    thresholdGuide.innerHTML = ['dps', 'sniper', 'support'].map((category) => {
+    thresholdGuide.innerHTML = ['dps', 'sniper', 'support', 'bio'].map((category) => {
       const group = settings.thresholds[category];
       return `
         <div>
           <span>${categoryLabel(category)}</span>
           ${metricLine('PDEF', group.pdef)}
           ${metricLine('MDEF', group.mdef)}
-          ${category === 'support' ? '<small>Biochemist · High Priest · Bard/Gypsy</small>' : ''}
+          ${category === 'support' ? '<small>High Priest · Bard/Gypsy</small>' : category === 'bio' ? '<small>Biochemist only</small>' : ''}
         </div>
       `;
     }).join('');
@@ -192,7 +194,7 @@
     if (!value || value === 'all') return true;
     const category = categoryForJob(member.job);
 
-    if (['dps', 'sniper', 'support'].includes(value)) return category === value;
+    if (['dps', 'sniper', 'support', 'bio'].includes(value)) return category === value;
     if (['verified', 'pending', 'update_required', 'unverified'].includes(value)) {
       return (member.verificationStatus || 'unverified') === value;
     }
