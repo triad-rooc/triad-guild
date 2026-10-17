@@ -11,7 +11,9 @@ export const config = {
     '/members.html',
     '/bidding.html',
     '/guides.html',
-    '/planner.html'
+    '/planner.html',
+    '/profile.html',
+    '/roster.html'
   ],
 };
 
@@ -25,6 +27,11 @@ export default function middleware(request) {
     const current = new URL(request.url);
     url.searchParams.set('next', current.pathname + current.search);
     return Response.redirect(url, 302);
+  }
+
+  const pathname = new URL(request.url).pathname;
+  if (pathname === '/roster.html' && !['Council', 'Officer'].includes(session.role)) {
+    return Response.redirect(new URL('/members.html', request.url), 302);
   }
 
   return next();
