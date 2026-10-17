@@ -276,7 +276,7 @@
     } catch (error) {
       setStatus(error.message || 'Could not save your profile.', 'error');
     } finally {
-      saveButton.disabled = false;
+      if (saveButton) saveButton.disabled = !isEditing;
     }
   });
 
