@@ -13,11 +13,18 @@ function readBody(req) {
 }
 
 function cleanNumber(value, integer = false) {
-  const normalized = typeof value === 'string' ? value.replace(/,/g, '').trim() : value;
-  if (normalized === '' || normalized === null || normalized === undefined) return 0;
+  if (value === '' || value === null || value === undefined) return 0;
+
+  const normalized = String(value).trim();
+  const valid = integer
+    ? /^\d+$/.test(normalized)
+    : /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(normalized);
+
+  if (!valid) return null;
+
   const number = Number(normalized);
   if (!Number.isFinite(number) || number < 0) return null;
-  return integer ? Math.trunc(number) : number;
+  return integer ? number : number;
 }
 
 export default async function handler(req, res) {
