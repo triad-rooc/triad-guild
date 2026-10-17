@@ -2,7 +2,7 @@ import { requireSession } from '../../lib/api-auth.js';
 import { JOBS, databaseError, ensureSchema, fullProfile, getSql } from '../../lib/db.js';
 
 const integerFields = ['hp','pattack','mattack','pdef','mdef'];
-const decimalFields = ['pdamage','mdamage','equipmentPdef','equipmentMdef','ignorePdef','ignoreMdef','critResist'];
+const decimalFields = ['pdamage','mdamage','pdamageReduction','mdamageReduction','equipmentPdef','equipmentMdef','ignorePdef','ignoreMdef','critResist'];
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return req.body;
@@ -94,6 +94,8 @@ export default async function handler(req, res) {
         mattack,
         pdamage,
         mdamage,
+        pdamage_reduction,
+        mdamage_reduction,
         pdef,
         mdef,
         equipment_pdef,
@@ -113,6 +115,8 @@ export default async function handler(req, res) {
         ${values.mattack},
         ${values.pdamage},
         ${values.mdamage},
+        ${values.pdamageReduction},
+        ${values.mdamageReduction},
         ${values.pdef},
         ${values.mdef},
         ${equipmentPdefBasisPoints},
@@ -132,6 +136,8 @@ export default async function handler(req, res) {
         mattack = EXCLUDED.mattack,
         pdamage = EXCLUDED.pdamage,
         mdamage = EXCLUDED.mdamage,
+        pdamage_reduction = EXCLUDED.pdamage_reduction,
+        mdamage_reduction = EXCLUDED.mdamage_reduction,
         pdef = EXCLUDED.pdef,
         mdef = EXCLUDED.mdef,
         equipment_pdef = EXCLUDED.equipment_pdef,
