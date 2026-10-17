@@ -125,6 +125,46 @@
           </div>
         </div>
 
+        <div class="profile-form-section profile-threshold-section">
+          <div class="profile-threshold-heading">
+            <div>
+              <h3>Live Threshold Preview</h3>
+              <p>Your results update automatically while you edit your stats.</p>
+            </div>
+            <span class="profile-threshold-role" data-threshold-role>Select a job</span>
+          </div>
+
+          <div class="profile-threshold-grid">
+            <article class="profile-threshold-card">
+              <span>Final PDEF</span>
+              <strong data-final-pdef>0</strong>
+              <small data-final-pdef-formula>PDEF ÷ (1 + Equipment PDEF / 100)</small>
+              <em data-final-pdef-range>Choose a job to see your threshold.</em>
+            </article>
+
+            <article class="profile-threshold-card">
+              <span>Final MDEF</span>
+              <strong data-final-mdef>0</strong>
+              <small data-final-mdef-formula>MDEF ÷ (1 + Equipment MDEF / 100)</small>
+              <em data-final-mdef-range>Choose a job to see your threshold.</em>
+            </article>
+
+            <article class="profile-threshold-card">
+              <span>PDamage Reduction</span>
+              <strong data-pdamage-reduction-preview>0</strong>
+              <small>Your entered PDamage Reduction value</small>
+              <em data-pdamage-reduction-range>Choose a job to see your threshold.</em>
+            </article>
+
+            <article class="profile-threshold-card">
+              <span>MDamage Reduction</span>
+              <strong data-mdamage-reduction-preview>0</strong>
+              <small>Your entered MDamage Reduction value</small>
+              <em data-mdamage-reduction-range>Choose a job to see your threshold.</em>
+            </article>
+          </div>
+        </div>
+
         <div class="profile-form-actions">
           <p class="profile-form-status" data-profile-status aria-live="polite"></p>
           <button class="button primary" type="submit" data-profile-save>Save Profile</button>
