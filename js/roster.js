@@ -24,7 +24,7 @@
     const base = Number(baseDefense);
     const equipment = Number(equipmentPercent);
     if (!Number.isFinite(base) || !Number.isFinite(equipment)) return 0;
-    return base * (1 + (equipment / 100));
+    return base / (1 + (equipment / 100));
   };
 
   const formatComputedDefense = (value) => {
@@ -78,6 +78,29 @@
     return `<td class="defense-score" title="${escapeHtml(title)}"><span class="defense-value ${tier.className}">${formatComputedDefense(value)}</span></td>`;
   };
 
+  const reductionTier = (value, type, job) => {
+    if (SUPPORT_JOBS.has(job)) return null;
+
+    const number = Number(value);
+    if (!Number.isFinite(number)) return null;
+
+    const thresholds = type === 'p'
+      ? { label: 'DPS PDamage Reduction', red: 140, orange: 150, green: 160 }
+      : { label: 'DPS MDamage Reduction', red: 80, orange: 100, green: 110 };
+
+    if (number >= thresholds.green) return { className: 'threshold-green', thresholds };
+    if (number >= thresholds.orange) return { className: 'threshold-orange', thresholds };
+    return { className: 'threshold-red', thresholds };
+  };
+
+  const reductionCell = (value, type, job) => {
+    const tier = reductionTier(value, type, job);
+    if (!tier) return `<td>${formatNumber(value)}</td>`;
+
+    const title = `${tier.thresholds.label}: Red ${tier.thresholds.red}+ · Orange ${tier.thresholds.orange}+ · Green ${tier.thresholds.green}+`;
+    return `<td class="reduction-score" title="${escapeHtml(title)}"><span class="reduction-value ${tier.className}">${formatNumber(value)}</span></td>`;
+  };
+
   const formatDate = (value) => {
     if (!value) return '—';
     const date = new Date(value);
@@ -109,8 +132,8 @@
         <td>${formatNumber(member.mattack)}</td>
         <td>${formatNumber(member.pdamage)}</td>
         <td>${formatNumber(member.mdamage)}</td>
-        <td>${formatNumber(member.pdamageReduction)}</td>
-        <td>${formatNumber(member.mdamageReduction)}</td>
+        ${reductionCell(member.pdamageReduction, 'p', member.job)}
+        ${reductionCell(member.mdamageReduction, 'm', member.job)}
         ${defenseCell(computeDefense(member.pdef, member.equipmentPdef), member.job)}
         ${defenseCell(computeDefense(member.mdef, member.equipmentMdef), member.job)}
         <td>${formatNumber(member.ignorePdef)}</td>
