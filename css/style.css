@@ -461,3 +461,21 @@ footer {
 .logout-link {
   color: var(--text) !important;
 }
+
+
+/* Public vs member navigation */
+:root:not(.auth-member) .site-nav a[href="members.html"],
+:root:not(.auth-member) .site-nav a[href="bidding.html"],
+:root:not(.auth-member) .site-nav a[href="guides.html"],
+:root:not(.auth-member) .site-nav a[href="planner.html"],
+:root:not(.auth-member) .grid a[href="members.html"],
+:root:not(.auth-member) .grid a[href="bidding.html"],
+:root:not(.auth-member) .grid a[href="guides.html"],
+:root:not(.auth-member) .grid a[href="planner.html"],
+:root:not(.auth-member) .hero-actions a[href="planner.html"] {
+  display: none;
+}
+
+.login-link {
+  color: var(--text) !important;
+}

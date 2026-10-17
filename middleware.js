@@ -8,10 +8,7 @@ import {
 export const config = {
   runtime: 'nodejs',
   matcher: [
-    '/',
-    '/index.html',
     '/members.html',
-    '/events.html',
     '/bidding.html',
     '/guides.html',
     '/planner.html'

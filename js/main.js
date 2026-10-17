@@ -15,6 +15,22 @@
     themeToggle.setAttribute('title', `Switch to ${next.toLowerCase()} theme`);
   };
 
+  const insertBeforeTheme = (element) => {
+    if (!nav) return;
+    const theme = nav.querySelector('[data-theme-toggle]');
+    if (theme) nav.insertBefore(element, theme);
+    else nav.append(element);
+  };
+
+  const addLoginLink = () => {
+    if (!nav || nav.querySelector('.login-link')) return;
+    const login = document.createElement('a');
+    login.className = 'login-link';
+    login.href = '/login.html';
+    login.textContent = 'Login';
+    insertBeforeTheme(login);
+  };
+
   updateThemeButton();
 
   if (themeToggle) {
@@ -33,12 +49,17 @@
     });
   }
 
-  // TRIAD member session controls (Vercel only; silently ignored on GitHub Pages).
+  // Public visitors see Home + Events. Authenticated TRIAD members unlock the rest.
   if (nav && !document.body.classList.contains('login-page-body')) {
     fetch('/api/auth/session', { credentials: 'same-origin' })
       .then((response) => response.ok ? response.json() : null)
       .then((session) => {
-        if (!session || !session.authenticated || !session.user) return;
+        if (!session || !session.authenticated || !session.user) {
+          addLoginLink();
+          return;
+        }
+
+        root.classList.add('auth-member');
 
         const userBadge = document.createElement('span');
         userBadge.className = 'user-badge';
@@ -49,15 +70,9 @@
         logout.href = '/api/auth/logout';
         logout.textContent = 'Logout';
 
-        const theme = nav.querySelector('[data-theme-toggle]');
-        if (theme) {
-          nav.insertBefore(userBadge, theme);
-          nav.insertBefore(logout, theme);
-        } else {
-          nav.append(userBadge, logout);
-        }
+        insertBeforeTheme(userBadge);
+        insertBeforeTheme(logout);
       })
-      .catch(() => {});
+      .catch(() => addLoginLink());
   }
-
 })();
