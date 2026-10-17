@@ -39,3 +39,18 @@ ON member_profiles (job);
 
 CREATE INDEX IF NOT EXISTS member_profiles_verification_idx
 ON member_profiles (verification_status);
+
+
+CREATE TABLE IF NOT EXISTS bidding_assignments (
+  discord_id TEXT PRIMARY KEY REFERENCES member_profiles(discord_id) ON DELETE CASCADE,
+  category VARCHAR(40) NOT NULL,
+  page_number INTEGER NOT NULL,
+  slot_number INTEGER NOT NULL,
+  event_key VARCHAR(24) NOT NULL,
+  bidding_date DATE NOT NULL,
+  updated_by TEXT,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS bidding_assignments_date_idx
+ON bidding_assignments (bidding_date);

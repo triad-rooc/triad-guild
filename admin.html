@@ -124,6 +124,40 @@
         <div class="placeholder">Loading members...</div>
       </div>
     </section>
+
+    <section class="section">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>BIDDING MANAGEMENT</p>
+          <h2>Assign Bidding</h2>
+        </div>
+        <a class="button" href="bidding.html">Open Bidding Monitor</a>
+      </div>
+      <p class="admin-section-note">Assign each member's next bidding category, page, slot, and guild event. Choosing an event automatically sets its next date, and you can still override the date manually.</p>
+
+      <div class="bidding-admin-toolbar">
+        <label class="roster-search">
+          <span>Search Member</span>
+          <input type="search" placeholder="IGN or Job" data-bidding-admin-search />
+        </label>
+        <label class="roster-control">
+          <span>Category</span>
+          <select data-bidding-admin-filter>
+            <option value="all">All Categories</option>
+            <option value="Illusion Card Fragment">Illusion Card Fragment</option>
+            <option value="Light & Dark Feathers">Light & Dark Feathers</option>
+            <option value="Time & Space Feathers">Time & Space Feathers</option>
+            <option value="none">No Bidding Assigned</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="bidding-admin-list" data-bidding-admin-list>
+        <div class="placeholder">Loading bidding assignments...</div>
+      </div>
+      <p class="profile-form-status" data-bidding-admin-status aria-live="polite"></p>
+    </section>
+
   </main>
 
   <footer>
@@ -136,5 +170,6 @@
 
   <script src="js/main.js"></script>
   <script src="js/admin.js"></script>
+  <script src="js/admin-bidding.js"></script>
 </body>
 </html>

@@ -1886,3 +1886,216 @@ footer {
     flex-direction: column;
   }
 }
+
+
+/* TRIAD bidding monitor + admin */
+.profile-overview {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.profile-next-bidding strong {
+  font-size: 18px;
+}
+
+.bidding-admin-toolbar,
+.bidding-monitor-toolbar {
+  display: flex;
+  align-items: end;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.bidding-admin-toolbar .roster-search,
+.bidding-monitor-toolbar .roster-search {
+  margin-left: auto;
+}
+
+.bidding-admin-list,
+.bidding-monitor {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.bidding-admin-row {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.15fr) minmax(190px, 1.25fr) 92px 104px minmax(150px, 1fr) minmax(150px, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  background: var(--panel);
+}
+
+.bidding-admin-member {
+  align-self: center;
+}
+
+.bidding-admin-member strong,
+.bidding-admin-member small {
+  display: block;
+}
+
+.bidding-admin-member strong {
+  margin: 6px 0 3px;
+  font-size: 16px;
+}
+
+.bidding-admin-member small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.bidding-admin-row label {
+  display: grid;
+  gap: 7px;
+}
+
+.bidding-admin-row label > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.bidding-admin-row input,
+.bidding-admin-row select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0 10px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.bidding-admin-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.bidding-admin-actions .button {
+  min-height: 42px;
+  padding-inline: 12px;
+}
+
+.bidding-admin-actions .button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.bidding-monitor-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) minmax(190px, 1.3fr) minmax(130px, .8fr) minmax(120px, .8fr) minmax(120px, .8fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.bidding-monitor-row > div {
+  min-height: 92px;
+  padding: 16px 18px;
+  background: var(--panel);
+}
+
+.bidding-monitor-row span {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.bidding-monitor-row strong {
+  display: block;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.bidding-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.bidding-category-grid > div {
+  min-height: 130px;
+  padding: 22px;
+  background: var(--panel);
+}
+
+.bidding-category-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.bidding-category-grid strong {
+  display: block;
+  margin-top: 38px;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+@media (max-width: 1180px) {
+  .bidding-admin-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .bidding-admin-member {
+    grid-column: 1 / -1;
+  }
+
+  .bidding-admin-actions {
+    align-self: end;
+  }
+
+  .bidding-monitor-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 850px) {
+  .profile-overview,
+  .bidding-category-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bidding-admin-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .bidding-admin-actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .bidding-admin-row,
+  .bidding-monitor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .bidding-admin-toolbar,
+  .bidding-monitor-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .bidding-admin-toolbar .roster-search,
+  .bidding-monitor-toolbar .roster-search,
+  .bidding-admin-toolbar .roster-control,
+  .bidding-monitor-toolbar .roster-control {
+    width: 100%;
+    margin-left: 0;
+  }
+}
