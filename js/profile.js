@@ -63,27 +63,27 @@
   const reductionThresholds = (job, type) => {
     if (SUPPORT_JOBS.has(job)) {
       return type === 'p'
-        ? { role: 'Support', redMax: 179, middle: 180, green: 190 }
-        : { role: 'Support', redMax: 109, middle: 110, green: 120 };
+        ? { role: 'Support', redMax: 179, middle: 180, green: 190, middleLabel: 'Yellow', middleClass: 'threshold-yellow' }
+        : { role: 'Support', redMax: 109, middle: 110, green: 120, middleLabel: 'Yellow', middleClass: 'threshold-yellow' };
     }
 
     return type === 'p'
-      ? { role: job === 'Sniper' ? 'Sniper' : 'DPS', redMax: 149, middle: 150, green: 160 }
-      : { role: job === 'Sniper' ? 'Sniper' : 'DPS', redMax: 99, middle: 100, green: 110 };
+      ? { role: job === 'Sniper' ? 'Sniper' : 'DPS', redMax: 149, middle: 150, green: 160, middleLabel: 'Orange', middleClass: 'threshold-orange' }
+      : { role: job === 'Sniper' ? 'Sniper' : 'DPS', redMax: 99, middle: 100, green: 110, middleLabel: 'Orange', middleClass: 'threshold-orange' };
   };
 
   const thresholdClass = (value, thresholds) => {
     if (value >= thresholds.green) return 'threshold-green';
-    if (value >= thresholds.middle) return 'threshold-yellow';
+    if (value >= thresholds.middle) return thresholds.middleClass || 'threshold-yellow';
     return 'threshold-red';
   };
 
   const thresholdText = (thresholds) =>
-    `Red ≤${thresholds.redMax} · Yellow ${thresholds.middle}–${thresholds.green - 1} · Green ${thresholds.green}+`;
+    `Red ≤${thresholds.redMax} · ${thresholds.middleLabel || 'Yellow'} ${thresholds.middle}–${thresholds.green - 1} · Green ${thresholds.green}+`;
 
   const applyThresholdPreview = (element, value, thresholds) => {
     if (!element) return;
-    element.classList.remove('threshold-red', 'threshold-yellow', 'threshold-green');
+    element.classList.remove('threshold-red', 'threshold-orange', 'threshold-yellow', 'threshold-green');
     element.classList.add(thresholdClass(value, thresholds));
     element.textContent = formatPreviewNumber(value);
   };
@@ -111,7 +111,7 @@
       if (preview.role) preview.role.textContent = 'Select a job';
       for (const element of [preview.finalPdef, preview.finalMdef, preview.pdamageReduction, preview.mdamageReduction]) {
         if (!element) continue;
-        element.classList.remove('threshold-red', 'threshold-yellow', 'threshold-green');
+        element.classList.remove('threshold-red', 'threshold-orange', 'threshold-yellow', 'threshold-green');
         element.textContent = '—';
       }
       for (const element of [preview.finalPdefRange, preview.finalMdefRange, preview.pdamageReductionRange, preview.mdamageReductionRange]) {
