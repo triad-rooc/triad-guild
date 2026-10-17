@@ -479,3 +479,123 @@ footer {
 .login-link {
   color: var(--text) !important;
 }
+
+
+/* Weekly event reminder */
+.event-reminder {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, .72fr);
+  gap: 1px;
+  margin: 72px 0 0;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.event-reminder-copy,
+.event-reminder-schedule {
+  background: var(--panel);
+}
+
+.event-reminder-copy {
+  padding: clamp(30px, 4vw, 48px);
+}
+
+.event-reminder-copy .eyebrow {
+  margin-bottom: 36px;
+}
+
+.event-reminder-status {
+  display: inline-block;
+  margin-bottom: 9px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.event-reminder-heading h2 {
+  margin: 0;
+  max-width: 680px;
+  font-size: clamp(36px, 5vw, 66px);
+  line-height: .95;
+  letter-spacing: -.045em;
+  text-transform: uppercase;
+}
+
+.event-reminder-when {
+  margin: 14px 0 0;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.event-reminder-note {
+  margin: 30px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.event-reminder-schedule {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+}
+
+.event-day {
+  min-height: 92px;
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--line);
+}
+
+.event-day:last-child {
+  border-bottom: 0;
+}
+
+.event-day-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+
+.event-day strong {
+  font-size: 15px;
+  letter-spacing: -.01em;
+}
+
+.event-day.is-next {
+  background: var(--panel-2);
+}
+
+.event-day.is-next .event-day-label,
+.event-day.is-next strong {
+  color: var(--text);
+}
+
+.event-day.is-next .event-day-label::before {
+  content: "⟁ ";
+}
+
+@media (max-width: 850px) {
+  .event-reminder {
+    grid-template-columns: 1fr;
+    margin-top: 48px;
+  }
+}
+
+@media (max-width: 520px) {
+  .event-reminder-copy {
+    padding: 28px;
+  }
+
+  .event-day {
+    grid-template-columns: 52px minmax(0, 1fr);
+    padding: 18px 22px;
+  }
+}
