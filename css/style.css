@@ -1364,3 +1364,17 @@ footer {
   font-size: 9px;
   letter-spacing: .08em;
 }
+
+
+/* Roster profile freshness */
+.roster-table td.freshness-score {
+  font-weight: 900;
+}
+
+.roster-table .freshness-value {
+  display: inline-block;
+  min-width: 78px;
+  color: rgb(var(--threshold-rgb));
+  font-weight: 900;
+  text-align: right;
+}
