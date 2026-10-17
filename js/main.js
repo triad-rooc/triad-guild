@@ -32,4 +32,32 @@
       navToggle.setAttribute('aria-expanded', String(isOpen));
     });
   }
+
+  // TRIAD member session controls (Vercel only; silently ignored on GitHub Pages).
+  if (nav && !document.body.classList.contains('login-page-body')) {
+    fetch('/api/auth/session', { credentials: 'same-origin' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((session) => {
+        if (!session || !session.authenticated || !session.user) return;
+
+        const userBadge = document.createElement('span');
+        userBadge.className = 'user-badge';
+        userBadge.textContent = session.user.name || 'TRIAD MEMBER';
+
+        const logout = document.createElement('a');
+        logout.className = 'logout-link';
+        logout.href = '/api/auth/logout';
+        logout.textContent = 'Logout';
+
+        const theme = nav.querySelector('[data-theme-toggle]');
+        if (theme) {
+          nav.insertBefore(userBadge, theme);
+          nav.insertBefore(logout, theme);
+        } else {
+          nav.append(userBadge, logout);
+        }
+      })
+      .catch(() => {});
+  }
+
 })();

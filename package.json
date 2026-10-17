@@ -1,0 +1,8 @@
+{
+  "name": "triad-guild",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@vercel/functions": "latest"
+  }
+}

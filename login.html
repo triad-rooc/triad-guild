@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="color-scheme" content="dark light" />
+  <title>TRIAD | Member Login</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/logo/triad-mark-on-light.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="/assets/logo/triad-mark-on-dark.svg" media="(prefers-color-scheme: dark)" />
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('triad-theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = saved || (prefersLight ? 'light' : 'dark');
+      } catch (_) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="login-page-body">
+  <main class="login-page">
+    <section class="login-card">
+      <div class="login-logo" aria-hidden="true">
+        <img class="logo-on-dark" src="/assets/logo/triad-mark-on-dark.svg" alt="" />
+        <img class="logo-on-light" src="/assets/logo/triad-mark-on-light.svg" alt="" />
+      </div>
+      <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — MEMBER ACCESS</p>
+      <h1 class="login-title">TRIAD</h1>
+      <p class="login-copy">Sign in with Discord to access the TRIAD guild hub. Access is limited to approved members of the TRIAD Discord server.</p>
+      <p class="auth-error" id="auth-error" role="alert"></p>
+      <a class="button primary" id="discord-login" href="/api/auth/login">Login with Discord</a>
+      <p class="login-meta">Ragnarok Origin Classic · Guild Hub</p>
+    </section>
+  </main>
+
+  <script src="/js/main.js"></script>
+  <script>
+    (() => {
+      const params = new URLSearchParams(location.search);
+      const next = params.get('next');
+      const login = document.getElementById('discord-login');
+      if (next && next.startsWith('/') && !next.startsWith('//')) {
+        login.href = '/api/auth/login?next=' + encodeURIComponent(next);
+      }
+
+      const messages = {
+        config: 'Discord login is not configured yet.',
+        state: 'The login session expired. Please try again.',
+        oauth: 'Discord sign-in failed. Please try again.',
+        not_member: 'This Discord account is not a member of the TRIAD server.',
+        role: 'Your Discord account does not have an approved TRIAD member role.'
+      };
+
+      const error = params.get('error');
+      if (error && messages[error]) {
+        const box = document.getElementById('auth-error');
+        box.textContent = messages[error];
+        box.classList.add('visible');
+      }
+    })();
+  </script>
+</body>
+</html>
