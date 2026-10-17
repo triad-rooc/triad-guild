@@ -36,6 +36,48 @@
     });
   };
 
+  const SUPPORT_JOBS = new Set(['Biochemist', 'High Priest', 'Bard/Gypsy']);
+
+  const defenseThresholds = (job) => {
+    if (job === 'Sniper') {
+      return { label: 'Sniper', red: 3600, orange: 3800, green: 4000 };
+    }
+
+    if (SUPPORT_JOBS.has(job)) {
+      return { label: 'Support', red: 4600, orange: 4800, green: 5300 };
+    }
+
+    return { label: 'DPS', red: 3800, orange: 4000, green: 4200 };
+  };
+
+  const defenseTier = (value, job) => {
+    const thresholds = defenseThresholds(job);
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+      return { className: 'threshold-red', thresholds };
+    }
+
+    if (number >= thresholds.green) {
+      return { className: 'threshold-green', thresholds };
+    }
+
+    if (number >= thresholds.orange) {
+      return { className: 'threshold-orange', thresholds };
+    }
+
+    return { className: 'threshold-red', thresholds };
+  };
+
+  const defenseCell = (value, job) => {
+    const tier = defenseTier(value, job);
+    const belowRed = Number(value) < tier.thresholds.red;
+    const note = belowRed ? ' · Below red target' : '';
+    const title = `${tier.thresholds.label}: Red ${tier.thresholds.red}+ · Orange ${tier.thresholds.orange}+ · Green ${tier.thresholds.green}+${note}`;
+
+    return `<td class="defense-score ${tier.className}" title="${escapeHtml(title)}">${formatComputedDefense(value)}</td>`;
+  };
+
   const formatDate = (value) => {
     if (!value) return '—';
     const date = new Date(value);
@@ -54,7 +96,7 @@
     if (count) count.textContent = `${filtered.length} / ${roster.length} members`;
 
     if (!filtered.length) {
-      body.innerHTML = '<tr><td colspan="13">No matching members.</td></tr>';
+      body.innerHTML = '<tr><td colspan="15">No matching members.</td></tr>';
       return;
     }
 
@@ -67,8 +109,10 @@
         <td>${formatNumber(member.mattack)}</td>
         <td>${formatNumber(member.pdamage)}</td>
         <td>${formatNumber(member.mdamage)}</td>
-        <td>${formatComputedDefense(computeDefense(member.pdef, member.equipmentPdef))}</td>
-        <td>${formatComputedDefense(computeDefense(member.mdef, member.equipmentMdef))}</td>
+        <td>${formatNumber(member.pdamageReduction)}</td>
+        <td>${formatNumber(member.mdamageReduction)}</td>
+        ${defenseCell(computeDefense(member.pdef, member.equipmentPdef), member.job)}
+        ${defenseCell(computeDefense(member.mdef, member.equipmentMdef), member.job)}
         <td>${formatNumber(member.ignorePdef)}</td>
         <td>${formatNumber(member.ignoreMdef)}</td>
         <td>${formatNumber(member.critResist)}</td>
@@ -95,7 +139,7 @@
       render();
     } catch (error) {
       if (count) count.textContent = '';
-      body.innerHTML = `<tr><td colspan="13">${escapeHtml(error.message || 'Could not load the roster.')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="15">${escapeHtml(error.message || 'Could not load the roster.')}</td></tr>`;
     }
   };
 
