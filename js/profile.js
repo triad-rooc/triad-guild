@@ -1,0 +1,88 @@
+(() => {
+  const form = document.querySelector('[data-profile-form]');
+  if (!form) return;
+
+  const status = document.querySelector('[data-profile-status]');
+  const updated = document.querySelector('[data-profile-updated]');
+  const saveButton = document.querySelector('[data-profile-save]');
+
+  const setStatus = (message, type = '') => {
+    if (!status) return;
+    status.textContent = message;
+    status.dataset.statusType = type;
+  };
+
+  const displayDate = (value) => {
+    if (!value) return 'Not saved yet';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return 'Saved';
+    return `Last updated · ${date.toLocaleString()}`;
+  };
+
+  const writeProfile = (profile) => {
+    if (!profile) return;
+
+    for (const [key, value] of Object.entries(profile)) {
+      const field = form.elements.namedItem(key);
+      if (field && value !== null && value !== undefined) field.value = value;
+    }
+
+    if (updated) updated.textContent = displayDate(profile.updatedAt);
+  };
+
+  const load = async () => {
+    setStatus('Loading profile...');
+    try {
+      const response = await fetch('/api/profile/me', { credentials: 'same-origin' });
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not load your profile.');
+      }
+
+      if (data.profile) {
+        writeProfile(data.profile);
+        setStatus('Profile loaded.');
+      } else {
+        setStatus('Set up your character profile below.');
+      }
+    } catch (error) {
+      setStatus(error.message || 'Could not load your profile.', 'error');
+    }
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const payload = {};
+    new FormData(form).forEach((value, key) => {
+      payload[key] = typeof value === 'string' ? value.trim() : value;
+    });
+
+    saveButton.disabled = true;
+    setStatus('Saving...');
+
+    try {
+      const response = await fetch('/api/profile/me', {
+        method: 'PUT',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.message || 'Could not save your profile.');
+      }
+
+      writeProfile(data.profile);
+      setStatus('Profile saved.', 'success');
+    } catch (error) {
+      setStatus(error.message || 'Could not save your profile.', 'error');
+    } finally {
+      saveButton.disabled = false;
+    }
+  });
+
+  load();
+})();
