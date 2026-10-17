@@ -1,3 +1,4 @@
+import { ensureSchema, getSql } from '../../lib/db.js';
 import {
   NEXT_COOKIE,
   SESSION_COOKIE,
@@ -84,15 +85,30 @@ export default async function handler(req, res) {
       user.username ||
       'TRIAD Member';
 
+    const role = getRole(member.roles);
+
     const session = signSession({
       uid: user.id,
       name: displayName,
       username: user.username,
       avatar: user.avatar || null,
-      role: getRole(member.roles),
+      role,
       iat: now,
       exp: now + SESSION_MAX_AGE,
     }, SESSION_SECRET);
+
+    try {
+      await ensureSchema();
+      const sql = getSql();
+      await sql`
+        UPDATE member_profiles
+        SET guild_role = ${role}
+        WHERE discord_id = ${user.id}
+          AND guild_role IS DISTINCT FROM ${role}
+      `;
+    } catch (error) {
+      console.error('TRIAD role sync error:', error);
+    }
 
     const next = sanitizeNext(cookies[NEXT_COOKIE] || '/');
 
