@@ -75,7 +75,7 @@
     const note = belowRed ? ' · Below red target' : '';
     const title = `${tier.thresholds.label}: Red ${tier.thresholds.red}+ · Orange ${tier.thresholds.orange}+ · Green ${tier.thresholds.green}+${note}`;
 
-    return `<td class="defense-score ${tier.className}" title="${escapeHtml(title)}">${formatComputedDefense(value)}</td>`;
+    return `<td class="defense-score" title="${escapeHtml(title)}"><span class="defense-value ${tier.className}">${formatComputedDefense(value)}</span></td>`;
   };
 
   const formatDate = (value) => {
