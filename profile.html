@@ -108,20 +108,20 @@
         <div class="profile-form-section">
           <h3>Stats</h3>
           <div class="profile-form-grid">
-            <label class="profile-field"><span>HP</span><input name="hp" type="text" inputmode="numeric" value="0" /></label>
-            <label class="profile-field"><span>PATTACK</span><input name="pattack" type="text" inputmode="numeric" value="0" /></label>
-            <label class="profile-field"><span>MATTACK</span><input name="mattack" type="text" inputmode="numeric" value="0" /></label>
-            <label class="profile-field"><span>PDAMAGE</span><input name="pdamage" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>MDAMAGE</span><input name="mdamage" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>PDamage Reduction (%)</span><input name="pdamageReduction" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>MDamage Reduction (%)</span><input name="mdamageReduction" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>PDEF</span><input name="pdef" type="text" inputmode="numeric" value="0" /></label>
-            <label class="profile-field"><span>MDEF</span><input name="mdef" type="text" inputmode="numeric" value="0" /></label>
-            <label class="profile-field"><span>Equipment PDEF (%)</span><input name="equipmentPdef" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>Equipment MDEF (%)</span><input name="equipmentMdef" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>Ignore PDEF</span><input name="ignorePdef" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>Ignore MDEF</span><input name="ignoreMdef" type="text" inputmode="decimal" value="0" /></label>
-            <label class="profile-field"><span>Crit Resist</span><input name="critResist" type="text" inputmode="decimal" value="0" /></label>
+            <label class="profile-field"><span>HP</span><input name="hp" type="text" inputmode="numeric" pattern="[0-9]*" data-number-kind="integer" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>PATTACK</span><input name="pattack" type="text" inputmode="numeric" pattern="[0-9]*" data-number-kind="integer" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>MATTACK</span><input name="mattack" type="text" inputmode="numeric" pattern="[0-9]*" data-number-kind="integer" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>PDAMAGE</span><input name="pdamage" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>MDAMAGE</span><input name="mdamage" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>PDamage Reduction (%)</span><input name="pdamageReduction" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>MDamage Reduction (%)</span><input name="mdamageReduction" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>PDEF</span><input name="pdef" type="text" inputmode="numeric" pattern="[0-9]*" data-number-kind="integer" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>MDEF</span><input name="mdef" type="text" inputmode="numeric" pattern="[0-9]*" data-number-kind="integer" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>Equipment PDEF (%)</span><input name="equipmentPdef" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>Equipment MDEF (%)</span><input name="equipmentMdef" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>Ignore PDEF</span><input name="ignorePdef" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>Ignore MDEF</span><input name="ignoreMdef" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
+            <label class="profile-field"><span>Crit Resist</span><input name="critResist" type="text" inputmode="decimal" pattern="[0-9]+([.][0-9]*)?" data-number-kind="decimal" autocomplete="off" spellcheck="false" value="0" /></label>
           </div>
         </div>
 
