@@ -1,5 +1,11 @@
 import { requireStaff } from '../lib/api-auth.js';
-import { databaseError, ensureSchema, fullProfile, getSql } from '../lib/db.js';
+import {
+  databaseError,
+  ensureSchema,
+  fullProfile,
+  getGuildSettings,
+  getSql,
+} from '../lib/db.js';
 
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
@@ -14,14 +20,18 @@ export default async function handler(req, res) {
   try {
     await ensureSchema();
     const sql = getSql();
-    const rows = await sql`
-      SELECT *
-      FROM member_profiles
-      ORDER BY LOWER(ign), ign
-    `;
+    const [rows, settings] = await Promise.all([
+      sql`
+        SELECT *
+        FROM member_profiles
+        ORDER BY LOWER(ign), ign
+      `,
+      getGuildSettings(),
+    ]);
 
     return res.status(200).json({
       roster: rows.map(fullProfile),
+      settings,
     });
   } catch (error) {
     return databaseError(res, error);

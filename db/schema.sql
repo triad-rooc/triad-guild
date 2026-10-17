@@ -19,9 +19,23 @@ CREATE TABLE IF NOT EXISTS member_profiles (
   ignore_pdef NUMERIC(12,4) NOT NULL DEFAULT 0,
   ignore_mdef NUMERIC(12,4) NOT NULL DEFAULT 0,
   crit_resist NUMERIC(12,4) NOT NULL DEFAULT 0,
+  verification_status VARCHAR(24) NOT NULL DEFAULT 'unverified',
+  verified_at TIMESTAMPTZ,
+  verified_by TEXT,
+  verification_note VARCHAR(240),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS guild_settings (
+  setting_key TEXT PRIMARY KEY,
+  setting_value JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_by TEXT
+);
+
 CREATE INDEX IF NOT EXISTS member_profiles_job_idx
 ON member_profiles (job);
+
+CREATE INDEX IF NOT EXISTS member_profiles_verification_idx
+ON member_profiles (verification_status);

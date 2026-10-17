@@ -1,5 +1,12 @@
-import { requireSession } from '../../lib/api-auth.js';
-import { JOBS, databaseError, ensureSchema, fullProfile, getSql } from '../../lib/db.js';
+import { requireSameOrigin, requireSession } from '../../lib/api-auth.js';
+import {
+  JOBS,
+  databaseError,
+  ensureSchema,
+  fullProfile,
+  getGuildSettings,
+  getSql,
+} from '../../lib/db.js';
 
 const integerFields = ['hp','pattack','mattack','pdef','mdef'];
 const decimalFields = ['pdamage','mdamage','pdamageReduction','mdamageReduction','equipmentPdef','equipmentMdef','ignorePdef','ignoreMdef','critResist'];
@@ -37,16 +44,20 @@ export default async function handler(req, res) {
     const sql = getSql();
 
     if (req.method === 'GET') {
-      const rows = await sql`
-        SELECT *
-        FROM member_profiles
-        WHERE discord_id = ${session.uid}
-        LIMIT 1
-      `;
+      const [rows, settings] = await Promise.all([
+        sql`
+          SELECT *
+          FROM member_profiles
+          WHERE discord_id = ${session.uid}
+          LIMIT 1
+        `,
+        getGuildSettings(),
+      ]);
 
       return res.status(200).json({
         profile: fullProfile(rows[0] || null),
         jobs: JOBS,
+        settings,
       });
     }
 
@@ -54,6 +65,8 @@ export default async function handler(req, res) {
       res.setHeader('Allow', 'GET, PUT, POST');
       return res.status(405).json({ error: 'method_not_allowed' });
     }
+
+    if (!requireSameOrigin(req, res)) return;
 
     const body = readBody(req);
     if (!body) return res.status(400).json({ error: 'invalid_json' });
@@ -84,8 +97,6 @@ export default async function handler(req, res) {
       }
     }
 
-    // equipment_pdef / equipment_mdef are stored as basis points:
-    // 40.25% => 4025. This preserves two decimal places while keeping the existing BIGINT schema.
     const equipmentPdefBasisPoints = Math.round(values.equipmentPdef * 100);
     const equipmentMdefBasisPoints = Math.round(values.equipmentMdef * 100);
 
@@ -111,6 +122,10 @@ export default async function handler(req, res) {
         ignore_pdef,
         ignore_mdef,
         crit_resist,
+        verification_status,
+        verified_at,
+        verified_by,
+        verification_note,
         updated_at
       ) VALUES (
         ${session.uid},
@@ -133,6 +148,10 @@ export default async function handler(req, res) {
         ${values.ignorePdef},
         ${values.ignoreMdef},
         ${values.critResist},
+        'pending',
+        NULL,
+        NULL,
+        '',
         NOW()
       )
       ON CONFLICT (discord_id) DO UPDATE SET
@@ -155,6 +174,10 @@ export default async function handler(req, res) {
         ignore_pdef = EXCLUDED.ignore_pdef,
         ignore_mdef = EXCLUDED.ignore_mdef,
         crit_resist = EXCLUDED.crit_resist,
+        verification_status = 'pending',
+        verified_at = NULL,
+        verified_by = NULL,
+        verification_note = '',
         updated_at = NOW()
       RETURNING *
     `;

@@ -1502,3 +1502,387 @@ footer {
     flex: 1;
   }
 }
+
+
+/* TRIAD profile verification + completion */
+.profile-overview {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 22px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.profile-overview > div {
+  min-height: 118px;
+  padding: 22px 24px;
+  background: var(--panel);
+}
+
+.profile-overview span,
+.profile-overview small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.profile-overview strong {
+  display: block;
+  margin: 12px 0 7px;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.profile-verification-status.status-verified,
+.verification-pill.status-verified,
+.admin-summary .status-verified {
+  color: rgb(46, 153, 91);
+}
+
+.profile-verification-status.status-pending,
+.verification-pill.status-pending,
+.admin-summary .status-pending {
+  color: rgb(222, 184, 45);
+}
+
+.profile-verification-status.status-update-required,
+.verification-pill.status-update-required,
+.admin-summary .status-update-required {
+  color: rgb(185, 52, 52);
+}
+
+.profile-verification-status.status-unverified,
+.verification-pill.status-unverified {
+  color: var(--muted);
+}
+
+/* Advanced roster controls */
+.roster-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 16px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.roster-summary span {
+  padding: 13px 15px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.roster-summary strong {
+  color: var(--text);
+  margin-right: 5px;
+}
+
+.roster-toolbar-advanced {
+  align-items: end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.roster-admin-link {
+  margin-right: auto;
+}
+
+.roster-control {
+  width: min(230px, 100%);
+  display: grid;
+  gap: 7px;
+}
+
+.roster-control > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.roster-control select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0 13px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.roster-table {
+  min-width: 1840px;
+}
+
+.verification-cell {
+  min-width: 190px;
+}
+
+.verification-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.verification-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.verification-actions button {
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  cursor: pointer;
+}
+
+.verification-actions button:hover {
+  border-color: var(--line-strong);
+  color: var(--text);
+}
+
+.verification-actions button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+/* Council admin */
+.admin-section-note {
+  max-width: 760px;
+  margin: -8px 0 24px !important;
+  font-size: 13px;
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.admin-summary > div {
+  min-height: 112px;
+  padding: 20px;
+  background: var(--panel);
+}
+
+.admin-summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.admin-summary strong {
+  display: block;
+  margin-top: 17px;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.admin-threshold-editor {
+  display: grid;
+  gap: 24px;
+}
+
+.admin-role-threshold {
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.admin-role-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 17px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-role-heading span {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.admin-role-heading small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.admin-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+.admin-metric-card {
+  padding: 20px;
+  background: var(--bg);
+}
+
+.admin-metric-card > strong {
+  display: block;
+  margin-bottom: 16px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+}
+
+.admin-metric-card label {
+  display: grid;
+  grid-template-columns: minmax(90px, 1fr) minmax(100px, 140px);
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+
+.admin-metric-card label span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.admin-metric-card input,
+.admin-freshness-grid input {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  padding: 0 10px;
+  background: var(--panel);
+  color: var(--text);
+  font: inherit;
+}
+
+.admin-settings-block {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.admin-settings-block h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.admin-freshness-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 20px;
+}
+
+.admin-settings-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 0 0;
+}
+
+.admin-member-search {
+  margin: 0 0 14px auto;
+}
+
+.admin-member-list {
+  display: grid;
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.admin-member-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) 150px minmax(250px, auto);
+  align-items: center;
+  gap: 18px;
+  padding: 18px 20px;
+  background: var(--panel);
+}
+
+.admin-member-main strong,
+.admin-member-main small {
+  display: block;
+}
+
+.admin-member-main strong {
+  margin: 7px 0 3px;
+  font-size: 17px;
+}
+
+.admin-member-main small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+@media (max-width: 850px) {
+  .profile-overview,
+  .admin-metric-grid,
+  .admin-freshness-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .roster-summary,
+  .admin-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-member-row {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .roster-admin-link {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .roster-control,
+  .roster-search {
+    flex: 1 1 220px;
+    width: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .roster-summary,
+  .admin-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-role-heading,
+  .admin-settings-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

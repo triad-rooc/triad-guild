@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TRIAD Council administration panel." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>TRIAD | Admin</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-light.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-dark.svg" media="(prefers-color-scheme: dark)" />
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('triad-theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = saved || (prefersLight ? 'light' : 'dark');
+      } catch (_) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="TRIAD Home">
+      <span class="brand-logo">
+        <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+        <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+      </span>
+      <span class="brand-word">TRIAD</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
+    <div class="header-menu" data-header-menu>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a class="member-only" href="members.html">Members</a>
+        <a href="events.html">Events</a>
+        <a class="staff-only" href="roster.html">Roster</a>
+      </nav>
+      <div class="account-nav">
+        <a href="admin.html" class="active">Admin</a>
+        <a class="profile-link member-session-only" href="profile.html">My Profile</a>
+        <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
+        <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-header">
+      <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — COUNCIL</p>
+      <h1>Admin</h1>
+      <p>Manage roster thresholds, profile freshness rules, and member verification without changing code.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>OVERVIEW</p>
+          <h2>Control Center</h2>
+        </div>
+        <p class="directory-count" data-admin-status>Loading...</p>
+      </div>
+      <div class="admin-summary" data-admin-summary>
+        <div class="placeholder">Loading member status...</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>ROSTER RULES</p>
+          <h2>Threshold Settings</h2>
+        </div>
+      </div>
+      <p class="admin-section-note">These values are used by both the Roster and My Profile live computation. Changes take effect from the database after saving—no code edit needed.</p>
+
+      <form data-admin-settings-form>
+        <div class="admin-threshold-editor" data-admin-thresholds></div>
+
+        <div class="admin-settings-block">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>PROFILE FRESHNESS</p>
+            <h3>Last Update Colors</h3>
+          </div>
+          <div class="admin-freshness-grid">
+            <label class="profile-field">
+              <span>Orange starts at (days)</span>
+              <input type="number" min="1" step="1" data-setting-path="freshness.orangeStartDays" />
+            </label>
+            <label class="profile-field">
+              <span>Red starts at (days)</span>
+              <input type="number" min="2" step="1" data-setting-path="freshness.redStartDays" />
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-settings-actions">
+          <p class="profile-form-status" data-settings-status aria-live="polite"></p>
+          <div class="profile-action-buttons">
+            <button class="button" type="button" data-reset-settings>Reset Form</button>
+            <button class="button primary" type="submit">Save Settings</button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="section">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>MEMBER CONTROL</p>
+          <h2>Verification Queue</h2>
+        </div>
+        <a class="button" href="roster.html">Open Full Roster</a>
+      </div>
+      <p class="admin-section-note">Discord roles stay read-only here. Council / Officer / Member access continues to come directly from Discord.</p>
+      <label class="roster-search admin-member-search">
+        <span>Search</span>
+        <input type="search" placeholder="IGN or Job" data-admin-member-search />
+      </label>
+      <div class="admin-member-list" data-admin-member-list>
+        <div class="placeholder">Loading members...</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-brand"><span class="brand-logo">
+      <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+      <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+    </span><span>TRIAD</span></span>
+    <span>Council Admin</span>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

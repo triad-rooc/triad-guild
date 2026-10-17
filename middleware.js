@@ -13,7 +13,8 @@ export const config = {
     '/guides.html',
     '/planner.html',
     '/profile.html',
-    '/roster.html'
+    '/roster.html',
+    '/admin.html'
   ],
 };
 
@@ -30,7 +31,12 @@ export default function middleware(request) {
   }
 
   const pathname = new URL(request.url).pathname;
+
   if (pathname === '/roster.html' && !['Council', 'Officer'].includes(session.role)) {
+    return Response.redirect(new URL('/members.html', request.url), 302);
+  }
+
+  if (pathname === '/admin.html' && session.role !== 'Council') {
     return Response.redirect(new URL('/members.html', request.url), 302);
   }
 
