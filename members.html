@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Guild roster, party assignments, roles, and attendance." />
+  <meta name="description" content="TRIAD member directory." />
   <meta name="color-scheme" content="dark light" />
   <title>TRIAD | Members</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-light.svg" media="(prefers-color-scheme: light)" />
@@ -24,22 +24,37 @@
 <body>
   <header class="site-header">
     <a class="brand" href="index.html" aria-label="TRIAD Home">
-      <span class="brand-logo ">
+      <span class="brand-logo">
         <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
         <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
       </span>
       <span class="brand-word">TRIAD</span>
     </a>
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
-    <nav class="site-nav" aria-label="Primary navigation">
-      <a href="index.html">Home</a>
-      <a class="active" href="members.html">Members</a>
-      <a href="events.html">Events</a>
-      <a href="bidding.html">Bidding</a>
-      <a href="guides.html">Guides</a>
-      <a href="planner.html">EO / GL Planner</a>
-      <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
-    </nav>
+    <div class="header-menu" data-header-menu>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a class="" href="index.html">Home</a>
+        <a class="member-only active" href="members.html">Members</a>
+        <a class="" href="events.html">Events</a>
+        <div class="nav-dropdown member-only" data-nav-dropdown>
+          <button class="nav-dropdown-toggle" type="button" aria-expanded="false" data-nav-dropdown-toggle>
+            Guild Essentials <span class="nav-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a class="" href="bidding.html">Bidding</a>
+            <a class="" href="guides.html">Guides</a>
+            <a class="" href="planner.html">EO / GL Planner</a>
+            <a class="staff-only" href="roster.html">Roster</a>
+          </div>
+        </div>
+      </nav>
+      <div class="account-nav" data-account-nav>
+        <a class="login-link" data-login-link href="login.html">Login</a>
+        <a class="profile-link member-session-only" href="profile.html">My Profile</a>
+        <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
+        <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
+      </div>
+    </div>
   </header>
   <main class="page">
     <section class="page-header">
@@ -48,8 +63,8 @@
       <p>Guild roster, party assignments, roles, and attendance.</p>
     </section>
     <section class="section">
-      <h2>Roster</h2>
-      <div class="placeholder">Member data will live here. We can add classes, roles, raid groups, attendance status, and officer notes.</div>
+      <h2>Member Directory</h2>
+      <div class="placeholder">The member directory will show basic member information such as IGN and Job. Full combat stats will remain private to each member and available to Council / Officers in the separate Roster.</div>
     </section>
   </main>
   <footer>
