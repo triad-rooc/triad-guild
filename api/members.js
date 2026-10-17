@@ -14,10 +14,24 @@ export default async function handler(req, res) {
   try {
     await ensureSchema();
     const sql = getSql();
+    await sql`
+      UPDATE member_profiles
+      SET guild_role = ${session.role || 'Member'}
+      WHERE discord_id = ${session.uid}
+        AND guild_role IS DISTINCT FROM ${session.role || 'Member'}
+    `;
+
     const rows = await sql`
-      SELECT discord_id, ign, job, updated_at
+      SELECT ign, job, guild_role
       FROM member_profiles
-      ORDER BY LOWER(ign), ign
+      ORDER BY
+        CASE guild_role
+          WHEN 'Council' THEN 1
+          WHEN 'Officer' THEN 2
+          ELSE 3
+        END,
+        LOWER(ign),
+        ign
     `;
 
     return res.status(200).json({
