@@ -38,20 +38,28 @@
 
   const SUPPORT_JOBS = new Set(['Biochemist', 'High Priest', 'Bard/Gypsy']);
 
-  const defenseThresholds = (job) => {
+  const defenseThresholds = (job, type) => {
+    const isPdef = type === 'p';
+
     if (job === 'Sniper') {
-      return { label: 'Sniper', red: 3600, orange: 3800, green: 4000 };
+      return isPdef
+        ? { label: 'Sniper PDEF', redMax: 2899, yellow: 2900, green: 3000 }
+        : { label: 'Sniper MDEF', redMax: 999, yellow: 1000, green: 1250 };
     }
 
     if (SUPPORT_JOBS.has(job)) {
-      return { label: 'Support', red: 4600, orange: 4800, green: 5300 };
+      return isPdef
+        ? { label: 'Support PDEF', redMax: 7399, yellow: 7400, green: 7500 }
+        : { label: 'Support MDEF', redMax: 1999, yellow: 2000, green: 2200 };
     }
 
-    return { label: 'DPS', red: 3800, orange: 4000, green: 4200 };
+    return isPdef
+      ? { label: 'DPS PDEF', redMax: 3699, yellow: 3700, green: 3850 }
+      : { label: 'DPS MDEF', redMax: 1199, yellow: 1200, green: 1350 };
   };
 
-  const defenseTier = (value, job) => {
-    const thresholds = defenseThresholds(job);
+  const defenseTier = (value, job, type) => {
+    const thresholds = defenseThresholds(job, type);
     const number = Number(value);
 
     if (!Number.isFinite(number)) {
@@ -62,18 +70,16 @@
       return { className: 'threshold-green', thresholds };
     }
 
-    if (number >= thresholds.orange) {
-      return { className: 'threshold-orange', thresholds };
+    if (number >= thresholds.yellow) {
+      return { className: 'threshold-yellow', thresholds };
     }
 
     return { className: 'threshold-red', thresholds };
   };
 
-  const defenseCell = (value, job) => {
-    const tier = defenseTier(value, job);
-    const belowRed = Number(value) < tier.thresholds.red;
-    const note = belowRed ? ' · Below red target' : '';
-    const title = `${tier.thresholds.label}: Red ${tier.thresholds.red}+ · Orange ${tier.thresholds.orange}+ · Green ${tier.thresholds.green}+${note}`;
+  const defenseCell = (value, job, type) => {
+    const tier = defenseTier(value, job, type);
+    const title = `${tier.thresholds.label}: Red ≤${tier.thresholds.redMax} · Yellow ${tier.thresholds.yellow}–${tier.thresholds.green - 1} · Green ${tier.thresholds.green}+`;
 
     return `<td class="defense-score" title="${escapeHtml(title)}"><span class="defense-value ${tier.className}">${formatComputedDefense(value)}</span></td>`;
   };
@@ -134,8 +140,8 @@
         <td>${formatNumber(member.mdamage)}</td>
         ${reductionCell(member.pdamageReduction, 'p', member.job)}
         ${reductionCell(member.mdamageReduction, 'm', member.job)}
-        ${defenseCell(computeDefense(member.pdef, member.equipmentPdef), member.job)}
-        ${defenseCell(computeDefense(member.mdef, member.equipmentMdef), member.job)}
+        ${defenseCell(computeDefense(member.pdef, member.equipmentPdef), member.job, 'p')}
+        ${defenseCell(computeDefense(member.mdef, member.equipmentMdef), member.job, 'm')}
         <td>${formatNumber(member.ignorePdef)}</td>
         <td>${formatNumber(member.ignoreMdef)}</td>
         <td>${formatNumber(member.critResist)}</td>
