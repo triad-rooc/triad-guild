@@ -64,16 +64,70 @@
       <p>Your personal TRIAD character profile. Only you will be able to edit your stats.</p>
     </section>
 
-    <section class="section">
-      <h2>Character Profile</h2>
-      <div class="profile-field-grid">
-        <div><span>Identity</span><strong>IGN · Job</strong></div>
-        <div><span>Offense</span><strong>PATTACK · MATTACK · PDAMAGE · MDAMAGE</strong></div>
-        <div><span>Defense</span><strong>HP · PDEF · MDEF · CRIT RESIST</strong></div>
-        <div><span>Equipment Defense</span><strong>EQUIPMENT PDEF · EQUIPMENT MDEF</strong></div>
-        <div><span>Penetration</span><strong>IGNORE PDEF · IGNORE MDEF</strong></div>
+    <section class="section profile-editor-section">
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>CHARACTER DATA</p>
+          <h2>Character Profile</h2>
+        </div>
+        <p class="profile-last-updated" data-profile-updated>Not saved yet</p>
       </div>
-      <p class="profile-build-note">Profile editing and stat saving will be connected when we add the member database.</p>
+
+      <form class="profile-form" data-profile-form>
+        <div class="profile-form-section">
+          <h3>Identity</h3>
+          <div class="profile-form-grid profile-form-grid-identity">
+            <label class="profile-field">
+              <span>IGN</span>
+              <input name="ign" type="text" maxlength="64" autocomplete="off" required placeholder="Enter your IGN" />
+            </label>
+
+            <label class="profile-field">
+              <span>Job</span>
+              <select name="job" required>
+                <option value="">Select Job</option>
+                <option>Paladin</option>
+                <option>Lord Knight</option>
+                <option>High Priest</option>
+                <option>Champion</option>
+                <option>High Wizard</option>
+                <option>Professor</option>
+                <option>Biochemist</option>
+                <option>Mastersmith</option>
+                <option>Sniper</option>
+                <option>Bard/Gypsy</option>
+                <option>Stalker</option>
+                <option>Assassin Cross</option>
+                <option>Doram</option>
+                <option>Gunslinger</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="profile-form-section">
+          <h3>Stats</h3>
+          <div class="profile-form-grid">
+            <label class="profile-field"><span>HP</span><input name="hp" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>PATTACK</span><input name="pattack" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>MATTACK</span><input name="mattack" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>PDAMAGE</span><input name="pdamage" type="text" inputmode="decimal" value="0" /></label>
+            <label class="profile-field"><span>MDAMAGE</span><input name="mdamage" type="text" inputmode="decimal" value="0" /></label>
+            <label class="profile-field"><span>PDEF</span><input name="pdef" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>MDEF</span><input name="mdef" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>Equipment PDEF</span><input name="equipmentPdef" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>Equipment MDEF</span><input name="equipmentMdef" type="text" inputmode="numeric" value="0" /></label>
+            <label class="profile-field"><span>Ignore PDEF</span><input name="ignorePdef" type="text" inputmode="decimal" value="0" /></label>
+            <label class="profile-field"><span>Ignore MDEF</span><input name="ignoreMdef" type="text" inputmode="decimal" value="0" /></label>
+            <label class="profile-field"><span>Crit Resist</span><input name="critResist" type="text" inputmode="decimal" value="0" /></label>
+          </div>
+        </div>
+
+        <div class="profile-form-actions">
+          <p class="profile-form-status" data-profile-status aria-live="polite"></p>
+          <button class="button primary" type="submit" data-profile-save>Save Profile</button>
+        </div>
+      </form>
     </section>
   </main>
 
@@ -85,5 +139,6 @@
     <span>My Profile</span>
   </footer>
   <script src="js/main.js"></script>
+  <script src="js/profile.js"></script>
 </body>
 </html>
