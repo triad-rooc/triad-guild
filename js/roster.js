@@ -20,6 +20,22 @@
     return number.toLocaleString(undefined, { maximumFractionDigits: 4 });
   };
 
+  const computeDefense = (baseDefense, equipmentPercent) => {
+    const base = Number(baseDefense);
+    const equipment = Number(equipmentPercent);
+    if (!Number.isFinite(base) || !Number.isFinite(equipment)) return 0;
+    return base * (1 + (equipment / 100));
+  };
+
+  const formatComputedDefense = (value) => {
+    const number = Number(value);
+    if (!Number.isFinite(number)) return '0';
+    return number.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+  };
+
   const formatDate = (value) => {
     if (!value) return '—';
     const date = new Date(value);
@@ -38,7 +54,7 @@
     if (count) count.textContent = `${filtered.length} / ${roster.length} members`;
 
     if (!filtered.length) {
-      body.innerHTML = '<tr><td colspan="15">No matching members.</td></tr>';
+      body.innerHTML = '<tr><td colspan="13">No matching members.</td></tr>';
       return;
     }
 
@@ -51,10 +67,8 @@
         <td>${formatNumber(member.mattack)}</td>
         <td>${formatNumber(member.pdamage)}</td>
         <td>${formatNumber(member.mdamage)}</td>
-        <td>${formatNumber(member.pdef)}</td>
-        <td>${formatNumber(member.mdef)}</td>
-        <td>${formatNumber(member.equipmentPdef)}</td>
-        <td>${formatNumber(member.equipmentMdef)}</td>
+        <td>${formatComputedDefense(computeDefense(member.pdef, member.equipmentPdef))}</td>
+        <td>${formatComputedDefense(computeDefense(member.mdef, member.equipmentMdef))}</td>
         <td>${formatNumber(member.ignorePdef)}</td>
         <td>${formatNumber(member.ignoreMdef)}</td>
         <td>${formatNumber(member.critResist)}</td>
@@ -81,7 +95,7 @@
       render();
     } catch (error) {
       if (count) count.textContent = '';
-      body.innerHTML = `<tr><td colspan="15">${escapeHtml(error.message || 'Could not load the roster.')}</td></tr>`;
+      body.innerHTML = `<tr><td colspan="13">${escapeHtml(error.message || 'Could not load the roster.')}</td></tr>`;
     }
   };
 
