@@ -1,4 +1,4 @@
-name: Deploy TRIAD website to GitHub Pages
+name: Redirect GitHub Pages to TRIAD Vercel
 
 on:
   push:
@@ -20,19 +20,34 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
 
+    steps:
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
 
-      - name: Upload site
+      - name: Build redirect site
+        run: |
+          mkdir -p _site
+          cat > _site/index.html <<'EOF'
+          <!doctype html>
+          <html><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=https://triad-guild.vercel.app/"><title>TRIAD</title></head>
+          <body><script>location.replace('https://triad-guild.vercel.app/' + location.search + location.hash)</script></body></html>
+          EOF
+          cat > _site/404.html <<'EOF'
+          <!doctype html>
+          <html><head><meta charset="utf-8"><title>TRIAD</title></head>
+          <body><script>
+          const path = location.pathname.replace(/^\/triad-guild/, '') || '/';
+          location.replace('https://triad-guild.vercel.app' + path + location.search + location.hash);
+          </script></body></html>
+          EOF
+
+      - name: Upload redirect site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: "."
+          path: "_site"
 
       - name: Deploy to GitHub Pages
         id: deployment
