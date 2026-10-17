@@ -1271,9 +1271,18 @@ footer {
 
 .roster-table td.defense-score {
   font-weight: 900;
+}
+
+.roster-table .defense-value {
+  display: inline-block;
+  min-width: 58px;
   color: rgb(var(--threshold-rgb));
-  background: rgba(var(--threshold-rgb), .10);
-  box-shadow: inset 3px 0 0 rgb(var(--threshold-rgb));
+  font-weight: 900;
+  text-align: right;
+  text-decoration: underline;
+  text-decoration-color: rgba(var(--threshold-rgb), .65);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
 }
 
 @media (max-width: 850px) {
