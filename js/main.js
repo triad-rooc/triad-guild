@@ -76,50 +76,88 @@
       .catch(() => addLoginLink());
   }
 
-  // Automatic weekly guild event reminder (TRIAD schedule, Japan time).
+  // Automatic weekly guild event reminder + live countdown.
+  // All TRIAD event call times use 20:00 (8:00 PM) GMT+8.
   const reminder = document.querySelector('.event-reminder');
   if (reminder) {
+    const GUILD_UTC_OFFSET_HOURS = 8;
+    const CALL_HOUR = 20;
+    const HOUR_MS = 60 * 60 * 1000;
+    const DAY_MS = 24 * HOUR_MS;
+
     const schedule = [
       { day: 2, name: 'Guild League', label: 'Tuesday' },
       { day: 4, name: 'Guild League', label: 'Thursday' },
       { day: 0, name: 'Emperium Overrun', label: 'Sunday' }
     ];
 
-    const weekdayShort = new Intl.DateTimeFormat('en-US', {
-      timeZone: 'Asia/Tokyo',
-      weekday: 'short'
-    }).format(new Date());
-
-    const weekdayMap = {
-      Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6
-    };
-
-    const today = weekdayMap[weekdayShort];
-    const ranked = schedule
-      .map((event) => ({ ...event, offset: (event.day - today + 7) % 7 }))
-      .sort((a, b) => a.offset - b.offset);
-
-    const nextEvent = ranked[0];
     const status = reminder.querySelector('[data-event-status]');
     const name = reminder.querySelector('[data-event-name]');
     const when = reminder.querySelector('[data-event-when]');
+    const daysEl = reminder.querySelector('[data-countdown-days]');
+    const hoursEl = reminder.querySelector('[data-countdown-hours]');
+    const minutesEl = reminder.querySelector('[data-countdown-minutes]');
+    const secondsEl = reminder.querySelector('[data-countdown-seconds]');
 
-    if (name) name.textContent = nextEvent.name;
+    const pad = (value) => String(value).padStart(2, '0');
 
-    if (nextEvent.offset === 0) {
-      if (status) status.textContent = 'TODAY';
-      if (when) when.textContent = `${nextEvent.label} · Guild event day`;
-    } else {
-      if (status) status.textContent = 'NEXT EVENT';
-      if (when) {
-        const daysText = nextEvent.offset === 1 ? '1 day' : `${nextEvent.offset} days`;
-        when.textContent = `${nextEvent.label} · In ${daysText}`;
+    const nextScheduledEvent = (now) => {
+      // Shift "now" into GMT+8, then use UTC getters so every visitor
+      // sees the same TRIAD schedule regardless of their device timezone.
+      const guildNow = new Date(now.getTime() + GUILD_UTC_OFFSET_HOURS * HOUR_MS);
+      const year = guildNow.getUTCFullYear();
+      const month = guildNow.getUTCMonth();
+      const date = guildNow.getUTCDate();
+      const weekday = guildNow.getUTCDay();
+
+      const candidates = schedule.map((event) => {
+        let dayOffset = (event.day - weekday + 7) % 7;
+        let guildLocalMs = Date.UTC(year, month, date + dayOffset, CALL_HOUR, 0, 0);
+        let eventUtcMs = guildLocalMs - GUILD_UTC_OFFSET_HOURS * HOUR_MS;
+
+        if (eventUtcMs <= now.getTime()) {
+          eventUtcMs += 7 * DAY_MS;
+          dayOffset += 7;
+        }
+
+        return { ...event, timestamp: eventUtcMs, dayOffset };
+      });
+
+      return candidates.sort((a, b) => a.timestamp - b.timestamp)[0];
+    };
+
+    let highlightedDay = null;
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const nextEvent = nextScheduledEvent(now);
+      const remaining = Math.max(0, nextEvent.timestamp - now.getTime());
+
+      const totalSeconds = Math.floor(remaining / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      if (name) name.textContent = nextEvent.name;
+      if (status) status.textContent = 'NEXT CALL TIME';
+      if (when) when.textContent = `${nextEvent.label} · 20:00 GMT+8 · 21:00 JST`;
+
+      if (daysEl) daysEl.textContent = pad(days);
+      if (hoursEl) hoursEl.textContent = pad(hours);
+      if (minutesEl) minutesEl.textContent = pad(minutes);
+      if (secondsEl) secondsEl.textContent = pad(seconds);
+
+      if (highlightedDay !== nextEvent.day) {
+        highlightedDay = nextEvent.day;
+        reminder.querySelectorAll('[data-event-day]').forEach((item) => {
+          item.classList.toggle('is-next', Number(item.dataset.eventDay) === nextEvent.day);
+        });
       }
-    }
+    };
 
-    reminder.querySelectorAll('[data-event-day]').forEach((item) => {
-      item.classList.toggle('is-next', Number(item.dataset.eventDay) === nextEvent.day);
-    });
+    updateCountdown();
+    window.setInterval(updateCountdown, 1000);
   }
 
 })();

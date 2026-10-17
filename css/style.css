@@ -599,3 +599,56 @@ footer {
     padding: 18px 22px;
   }
 }
+
+
+/* Event countdown */
+.event-countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(62px, 1fr));
+  gap: 1px;
+  margin-top: 24px;
+  max-width: 520px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.event-countdown > div {
+  min-width: 0;
+  padding: 16px 12px 14px;
+  background: var(--bg);
+  text-align: center;
+}
+
+.event-countdown strong {
+  display: block;
+  font-size: clamp(24px, 4vw, 40px);
+  line-height: 1;
+  letter-spacing: -.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.event-countdown span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.event-time {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 520px) {
+  .event-countdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
