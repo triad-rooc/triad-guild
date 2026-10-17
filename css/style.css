@@ -1074,10 +1074,53 @@ footer {
 
 .member-directory {
   display: grid;
+  gap: 34px;
+}
+
+.member-role-group {
+  display: grid;
+  gap: 14px;
+}
+
+.member-role-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.member-role-heading .eyebrow {
+  margin: 0 0 6px;
+}
+
+.member-role-heading h3 {
+  margin: 0;
+  font-size: 24px;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+
+.member-role-count {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.member-role-grid {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   border: 1px solid var(--line);
   background: var(--line);
+}
+
+.member-role-empty {
+  grid-column: 1 / -1;
+  padding: 24px;
+  color: var(--muted);
+  background: var(--panel);
+  font-size: 13px;
 }
 
 .member-card {
@@ -1177,7 +1220,7 @@ footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .member-directory {
+  .member-role-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -1195,7 +1238,7 @@ footer {
 
   .profile-form-grid,
   .profile-form-grid-identity,
-  .member-directory {
+  .member-role-grid {
     grid-template-columns: 1fr;
   }
 
