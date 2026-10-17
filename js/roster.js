@@ -116,11 +116,47 @@
     return `<td class="reduction-score" title="${escapeHtml(title)}"><span class="reduction-value ${tier.className}">${formatNumber(value)}</span></td>`;
   };
 
-  const formatDate = (value) => {
-    if (!value) return '—';
+  const updateAge = (value) => {
+    if (!value) return null;
+
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '—';
-    return date.toLocaleDateString();
+    if (Number.isNaN(date.getTime())) return null;
+
+    const now = new Date();
+    const elapsed = Math.max(0, now.getTime() - date.getTime());
+    const days = Math.floor(elapsed / 86400000);
+
+    let label;
+    if (days === 0) {
+      label = 'Today';
+    } else if (days === 1) {
+      label = '1 day ago';
+    } else if (days < 7) {
+      label = `${days} days ago`;
+    } else if (days < 28) {
+      const weeks = Math.floor(days / 7);
+      label = `${weeks} week${weeks === 1 ? '' : 's'} ago`;
+    } else {
+      const months = Math.max(1, Math.floor(days / 30));
+      label = `${months} month${months === 1 ? '' : 's'} ago`;
+    }
+
+    let className = 'threshold-green';
+    if (days >= 21) className = 'threshold-red';
+    else if (days >= 14) className = 'threshold-orange';
+
+    return {
+      label,
+      className,
+      exact: date.toLocaleString(),
+    };
+  };
+
+  const updateCell = (value) => {
+    const age = updateAge(value);
+    if (!age) return '<td>—</td>';
+
+    return `<td class="freshness-score" title="Last updated: ${escapeHtml(age.exact)}"><span class="freshness-value ${age.className}">${escapeHtml(age.label)}</span></td>`;
   };
 
   const render = () => {
@@ -154,7 +190,7 @@
         <td>${formatNumber(member.ignorePdef)}</td>
         <td>${formatNumber(member.ignoreMdef)}</td>
         <td>${formatNumber(member.critResist)}</td>
-        <td>${formatDate(member.updatedAt)}</td>
+        ${updateCell(member.updatedAt)}
       </tr>
     `).join('');
   };
