@@ -1125,7 +1125,7 @@ footer {
 
 .roster-table {
   width: 100%;
-  min-width: 1420px;
+  min-width: 1620px;
   border-collapse: collapse;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
@@ -1201,5 +1201,83 @@ footer {
 
   .profile-form-actions {
     padding: 20px;
+  }
+}
+
+
+/* TRIAD defense threshold indicators */
+.defense-thresholds {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0 0 18px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.defense-thresholds > div {
+  padding: 16px 18px;
+  background: var(--panel);
+}
+
+.defense-thresholds span,
+.defense-thresholds small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.defense-thresholds strong {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.defense-thresholds small {
+  margin-top: 7px;
+  line-height: 1.5;
+}
+
+.threshold-dot {
+  width: 8px;
+  height: 8px;
+  display: inline-block;
+  border-radius: 50%;
+}
+
+.threshold-red {
+  --threshold-rgb: 185, 52, 52;
+}
+
+.threshold-orange {
+  --threshold-rgb: 217, 133, 37;
+}
+
+.threshold-green {
+  --threshold-rgb: 46, 153, 91;
+}
+
+.threshold-dot.threshold-red,
+.threshold-dot.threshold-orange,
+.threshold-dot.threshold-green {
+  background: rgb(var(--threshold-rgb));
+}
+
+.roster-table td.defense-score {
+  font-weight: 900;
+  color: rgb(var(--threshold-rgb));
+  background: rgba(var(--threshold-rgb), .10);
+  box-shadow: inset 3px 0 0 rgb(var(--threshold-rgb));
+}
+
+@media (max-width: 850px) {
+  .defense-thresholds {
+    grid-template-columns: 1fr;
   }
 }
