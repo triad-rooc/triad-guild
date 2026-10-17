@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TRIAD staff roster and stat analysis." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>TRIAD | Roster</title>
+  <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-light.svg" media="(prefers-color-scheme: light)" />
+  <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-dark.svg" media="(prefers-color-scheme: dark)" />
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('triad-theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = saved || (prefersLight ? 'light' : 'dark');
+      } catch (_) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="TRIAD Home">
+      <span class="brand-logo">
+        <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+        <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+      </span>
+      <span class="brand-word">TRIAD</span>
+    </a>
+    <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
+    <div class="header-menu" data-header-menu>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a class="member-only" href="members.html">Members</a>
+        <a href="events.html">Events</a>
+        <div class="nav-dropdown member-only" data-nav-dropdown>
+          <button class="nav-dropdown-toggle active" type="button" aria-expanded="false" data-nav-dropdown-toggle>
+            Guild Essentials <span class="nav-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="bidding.html">Bidding</a>
+            <a href="guides.html">Guides</a>
+            <a href="planner.html">EO / GL Planner</a>
+            <a class="staff-only active" href="roster.html">Roster</a>
+          </div>
+        </div>
+      </nav>
+      <div class="account-nav">
+        <a class="login-link" data-login-link href="login.html">Login</a>
+        <a class="profile-link member-session-only" href="profile.html">My Profile</a>
+        <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
+        <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="page-header">
+      <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — STAFF</p>
+      <h1>Roster</h1>
+      <p>Full member stats, filters, comparisons, and future roster computations for Council and Officers.</p>
+    </section>
+
+    <section class="section">
+      <h2>Staff Roster</h2>
+      <div class="placeholder">The secure roster will populate from the member profile database. It will include HP, PATTACK, MATTACK, PDAMAGE, MDAMAGE, PDEF, MDEF, EQUIPMENT PDEF, EQUIPMENT MDEF, IGNORE PDEF, IGNORE MDEF, and CRIT RESIST.</div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="footer-brand"><span class="brand-logo">
+      <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+      <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+    </span><span>TRIAD</span></span>
+    <span>Staff Roster</span>
+  </footer>
+  <script src="js/main.js"></script>
+</body>
+</html>
