@@ -1259,12 +1259,17 @@ footer {
   --threshold-rgb: 217, 133, 37;
 }
 
+.threshold-yellow {
+  --threshold-rgb: 222, 184, 45;
+}
+
 .threshold-green {
   --threshold-rgb: 46, 153, 91;
 }
 
 .threshold-dot.threshold-red,
 .threshold-dot.threshold-orange,
+.threshold-dot.threshold-yellow,
 .threshold-dot.threshold-green {
   background: rgb(var(--threshold-rgb));
 }
@@ -1307,4 +1312,12 @@ footer {
   text-decoration-color: rgba(var(--threshold-rgb), .65);
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
+}
+
+
+.defense-thresholds strong b {
+  min-width: 42px;
+  color: var(--text);
+  font-size: 9px;
+  letter-spacing: .08em;
 }
