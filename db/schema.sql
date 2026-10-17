@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS member_profiles (
   display_name TEXT,
   ign VARCHAR(64) NOT NULL,
   job VARCHAR(32) NOT NULL,
+  guild_role VARCHAR(16) NOT NULL DEFAULT 'Member',
   hp BIGINT NOT NULL DEFAULT 0,
   pattack BIGINT NOT NULL DEFAULT 0,
   mattack BIGINT NOT NULL DEFAULT 0,
