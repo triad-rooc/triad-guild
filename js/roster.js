@@ -85,25 +85,34 @@
   };
 
   const reductionTier = (value, type, job) => {
-    if (SUPPORT_JOBS.has(job)) return null;
-
     const number = Number(value);
     if (!Number.isFinite(number)) return null;
 
-    const thresholds = type === 'p'
-      ? { label: 'DPS PDamage Reduction', red: 140, orange: 150, green: 160 }
-      : { label: 'DPS MDamage Reduction', red: 80, orange: 100, green: 110 };
+    if (SUPPORT_JOBS.has(job)) {
+      const thresholds = type === 'p'
+        ? { label: 'Support PDamage Reduction', redMax: 179, yellow: 180, green: 190 }
+        : { label: 'Support MDamage Reduction', redMax: 109, yellow: 110, green: 120 };
 
-    if (number >= thresholds.green) return { className: 'threshold-green', thresholds };
-    if (number >= thresholds.orange) return { className: 'threshold-orange', thresholds };
-    return { className: 'threshold-red', thresholds };
+      if (number >= thresholds.green) return { className: 'threshold-green', thresholds, middleLabel: 'Yellow' };
+      if (number >= thresholds.yellow) return { className: 'threshold-yellow', thresholds, middleLabel: 'Yellow' };
+      return { className: 'threshold-red', thresholds, middleLabel: 'Yellow' };
+    }
+
+    const thresholds = type === 'p'
+      ? { label: 'DPS PDamage Reduction', redMax: 149, orange: 150, green: 160 }
+      : { label: 'DPS MDamage Reduction', redMax: 99, orange: 100, green: 110 };
+
+    if (number >= thresholds.green) return { className: 'threshold-green', thresholds, middleLabel: 'Orange' };
+    if (number >= thresholds.orange) return { className: 'threshold-orange', thresholds, middleLabel: 'Orange' };
+    return { className: 'threshold-red', thresholds, middleLabel: 'Orange' };
   };
 
   const reductionCell = (value, type, job) => {
     const tier = reductionTier(value, type, job);
     if (!tier) return `<td>${formatNumber(value)}</td>`;
 
-    const title = `${tier.thresholds.label}: Red ${tier.thresholds.red}+ · Orange ${tier.thresholds.orange}+ · Green ${tier.thresholds.green}+`;
+    const middleStart = tier.thresholds.yellow ?? tier.thresholds.orange;
+    const title = `${tier.thresholds.label}: Red ≤${tier.thresholds.redMax} · ${tier.middleLabel} ${middleStart}–${tier.thresholds.green - 1} · Green ${tier.thresholds.green}+`;
     return `<td class="reduction-score" title="${escapeHtml(title)}"><span class="reduction-value ${tier.className}">${formatNumber(value)}</span></td>`;
   };
 
