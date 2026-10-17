@@ -1,8 +1,11 @@
 (() => {
   const root = document.documentElement;
   const navToggle = document.querySelector('.nav-toggle');
-  const nav = document.querySelector('.site-nav');
+  const headerMenu = document.querySelector('[data-header-menu]');
   const themeToggle = document.querySelector('[data-theme-toggle]');
+  const dropdown = document.querySelector('[data-nav-dropdown]');
+  const dropdownToggle = document.querySelector('[data-nav-dropdown-toggle]');
+  const loginLink = document.querySelector('[data-login-link]');
 
   const getTheme = () => root.dataset.theme || 'dark';
 
@@ -13,22 +16,6 @@
     themeToggle.textContent = next;
     themeToggle.setAttribute('aria-label', `Switch to ${next.toLowerCase()} theme`);
     themeToggle.setAttribute('title', `Switch to ${next.toLowerCase()} theme`);
-  };
-
-  const insertBeforeTheme = (element) => {
-    if (!nav) return;
-    const theme = nav.querySelector('[data-theme-toggle]');
-    if (theme) nav.insertBefore(element, theme);
-    else nav.append(element);
-  };
-
-  const addLoginLink = () => {
-    if (!nav || nav.querySelector('.login-link')) return;
-    const login = document.createElement('a');
-    login.className = 'login-link';
-    login.href = '/login.html';
-    login.textContent = 'Login';
-    insertBeforeTheme(login);
   };
 
   updateThemeButton();
@@ -42,38 +29,44 @@
     });
   }
 
-  if (navToggle && nav) {
+  if (navToggle && headerMenu) {
     navToggle.addEventListener('click', () => {
-      const isOpen = nav.classList.toggle('open');
+      const isOpen = headerMenu.classList.toggle('open');
       navToggle.setAttribute('aria-expanded', String(isOpen));
     });
   }
 
-  // Public visitors see Home + Events. Authenticated TRIAD members unlock the rest.
-  if (nav && !document.body.classList.contains('login-page-body')) {
+  if (dropdown && dropdownToggle) {
+    dropdownToggle.addEventListener('click', () => {
+      const isOpen = dropdown.classList.toggle('open');
+      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!dropdown.contains(event.target)) {
+        dropdown.classList.remove('open');
+        dropdownToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Public visitors see Home + Events + Login.
+  // Logged-in members unlock Members, Guild Essentials, and My Profile.
+  // Council / Officers additionally unlock the staff-only Roster.
+  if (!document.body.classList.contains('login-page-body')) {
     fetch('/api/auth/session', { credentials: 'same-origin' })
       .then((response) => response.ok ? response.json() : null)
       .then((session) => {
-        if (!session || !session.authenticated || !session.user) {
-          addLoginLink();
-          return;
-        }
+        if (!session || !session.authenticated || !session.user) return;
 
         root.classList.add('auth-member');
+        if (loginLink) loginLink.hidden = true;
 
-        const userBadge = document.createElement('span');
-        userBadge.className = 'user-badge';
-        userBadge.textContent = session.user.name || 'TRIAD MEMBER';
-
-        const logout = document.createElement('a');
-        logout.className = 'logout-link';
-        logout.href = '/api/auth/logout';
-        logout.textContent = 'Logout';
-
-        insertBeforeTheme(userBadge);
-        insertBeforeTheme(logout);
+        if (session.user.role === 'Council' || session.user.role === 'Officer') {
+          root.classList.add('auth-staff');
+        }
       })
-      .catch(() => addLoginLink());
+      .catch(() => {});
   }
 
   // Automatic weekly guild event reminder + live countdown.
@@ -102,8 +95,6 @@
     const pad = (value) => String(value).padStart(2, '0');
 
     const nextScheduledEvent = (now) => {
-      // Shift "now" into GMT+8, then use UTC getters so every visitor
-      // sees the same TRIAD schedule regardless of their device timezone.
       const guildNow = new Date(now.getTime() + GUILD_UTC_OFFSET_HOURS * HOUR_MS);
       const year = guildNow.getUTCFullYear();
       const month = guildNow.getUTCMonth();
@@ -111,16 +102,15 @@
       const weekday = guildNow.getUTCDay();
 
       const candidates = schedule.map((event) => {
-        let dayOffset = (event.day - weekday + 7) % 7;
-        let guildLocalMs = Date.UTC(year, month, date + dayOffset, CALL_HOUR, 0, 0);
+        const dayOffset = (event.day - weekday + 7) % 7;
+        const guildLocalMs = Date.UTC(year, month, date + dayOffset, CALL_HOUR, 0, 0);
         let eventUtcMs = guildLocalMs - GUILD_UTC_OFFSET_HOURS * HOUR_MS;
 
         if (eventUtcMs <= now.getTime()) {
           eventUtcMs += 7 * DAY_MS;
-          dayOffset += 7;
         }
 
-        return { ...event, timestamp: eventUtcMs, dayOffset };
+        return { ...event, timestamp: eventUtcMs };
       });
 
       return candidates.sort((a, b) => a.timestamp - b.timestamp)[0];
@@ -159,5 +149,4 @@
     updateCountdown();
     window.setInterval(updateCountdown, 1000);
   }
-
 })();
