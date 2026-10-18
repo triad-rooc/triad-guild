@@ -22,7 +22,17 @@
     return 'P' + first.page + ' S' + first.slot + ' → P' + last.page + ' S' + last.slot;
   };
 
-  let state = { cycle: null, events: [], assignments: [], roster: [], requests: [] };
+  const ffaText = (ffa) => {
+    const quantity = Number(ffa?.quantity || 0);
+    if (!quantity) return '0';
+    if (!ffa?.start || !ffa?.end) return String(quantity);
+    const range = quantity === 1
+      ? 'P' + ffa.start.page + ' S' + ffa.start.slot
+      : 'P' + ffa.start.page + ' S' + ffa.start.slot + ' → P' + ffa.end.page + ' S' + ffa.end.slot;
+    return quantity + ' · ' + range;
+  };
+
+  let state = { cycle: null, cycles: [], events: [], assignments: [], roster: [], requests: [] };
 
   const api = async (payload) => {
     const response = await fetch('/api/bidding-cycle?mock=1', {
@@ -39,16 +49,36 @@
   const latestRequestByMember = () => {
     const map = new Map();
     for (const item of state.requests || []) {
+      if (item.status === 'superseded') continue;
       if (!map.has(item.discordId)) map.set(item.discordId, item);
     }
     return map;
   };
 
   const responseBadge = (request) => {
-    if (!request) return '';
-    if (request.responseType === 'can_bid') return '<span class="bid-response-badge can">CAN BID</span>';
-    if (request.responseType === 'cannot_bid') return '<span class="bid-response-badge cannot">CANNOT BID</span>';
-    return '<span class="bid-response-badge change">CHANGE REQUESTED</span>';
+    if (!request || request.status === 'superseded') return '';
+
+    if (request.status === 'rejected') {
+      return '<span class="bid-response-badge rejected">REQUEST REJECTED</span>';
+    }
+
+    if (request.responseType === 'can_bid') {
+      return '<span class="bid-response-badge can">CAN BID</span>';
+    }
+
+    if (request.responseType === 'cannot_bid') {
+      return request.status === 'approved'
+        ? '<span class="bid-response-badge cannot">NOT BIDDING</span>'
+        : '<span class="bid-response-badge cannot">CANNOT BID · PENDING</span>';
+    }
+
+    if (request.responseType === 'change_date') {
+      return request.status === 'approved'
+        ? '<span class="bid-response-badge approved">CHANGE APPROVED</span>'
+        : '<span class="bid-response-badge change">CHANGE REQUESTED</span>';
+    }
+
+    return '<span class="bid-response-badge">' + escapeHtml(String(request.status || '').toUpperCase()) + '</span>';
   };
 
   const renderCalendar = () => {
@@ -115,6 +145,11 @@
             '<strong>' + members.length + '/' + event.effectiveCapacity + '</strong>' +
           '</div>' +
           '<div class="mock-schedule-stock"><span>Fragments ' + event.stock.fragment + '</span><span>L&D ' + event.stock.lightDark + '</span><span>T&S ' + event.stock.timeSpace + '</span></div>' +
+          '<div class="mock-schedule-ffa">' +
+            '<span><b>FFA</b> Fragments ' + escapeHtml(ffaText(event.ffa?.fragment)) + '</span>' +
+            '<span><b>FFA</b> L&D ' + escapeHtml(ffaText(event.ffa?.lightDark)) + '</span>' +
+            '<span><b>FFA</b> T&S ' + escapeHtml(ffaText(event.ffa?.timeSpace)) + '</span>' +
+          '</div>' +
           '<div class="mock-schedule-bidders">' +
             (members.length ? members.map((member) =>
               '<div class="mock-schedule-bidder">' +
@@ -198,7 +233,42 @@
     ).join('') : '<div class="placeholder">No request history yet.</div>';
   };
 
+  const renderCyclePicker = () => {
+    const heading = q('.section-heading-row');
+    if (!heading || !(state.cycles || []).length) return;
+
+    let wrap = q('[data-cycle-picker]');
+    if (!wrap) {
+      wrap = document.createElement('label');
+      wrap.className = 'mock-cycle-picker';
+      wrap.dataset.cyclePicker = '';
+      wrap.innerHTML = '<span>Bidding Cycle</span><select data-cycle-select></select>';
+      heading.append(wrap);
+    }
+
+    const select = wrap.querySelector('[data-cycle-select]');
+    const currentId = Number(state.cycle?.id || 0);
+    select.innerHTML = state.cycles.map((cycle) =>
+      '<option value="' + cycle.id + '"' + (cycle.id === currentId ? ' selected' : '') + '>' +
+        escapeHtml(formatDate(cycle.startDate) + ' → ' + formatDate(cycle.endDate) + ' · ' + String(cycle.status).toUpperCase() + ' · ' + cycle.assignmentCount + ' assigned') +
+      '</option>'
+    ).join('');
+
+    if (!select.dataset.bound) {
+      select.dataset.bound = '1';
+      select.addEventListener('change', () => {
+        const cycleId = Number(select.value || 0);
+        const url = new URL(window.location.href);
+        if (cycleId) url.searchParams.set('cycleId', String(cycleId));
+        else url.searchParams.delete('cycleId');
+        window.history.replaceState({}, '', url.pathname + url.search);
+        load(cycleId).catch(showLoadError);
+      });
+    }
+  };
+
   const render = () => {
+    renderCyclePicker();
     q('[data-mock-cycle-label]') && (q('[data-mock-cycle-label]').textContent = state.cycle
       ? formatDate(state.cycle.startDate) + ' → ' + formatDate(state.cycle.endDate)
       : 'No active mock cycle');
@@ -212,12 +282,15 @@
     }
   };
 
-  const load = async () => {
-    const response = await fetch('/api/bidding-cycle?manage=1&mock=1', { credentials: 'same-origin' });
+  const load = async (cycleId = null) => {
+    const query = new URLSearchParams({ manage: '1', mock: '1', portal: '1' });
+    if (cycleId) query.set('cycleId', String(cycleId));
+    const response = await fetch('/api/bidding-cycle?' + query.toString(), { credentials: 'same-origin' });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.message || 'Could not load mock bidding.');
     state = {
       cycle: data.cycle || null,
+      cycles: data.cycles || [],
       events: data.events || [],
       assignments: data.assignments || [],
       roster: data.roster || [],
@@ -245,7 +318,7 @@
           note: q('[data-request-note]').value,
         };
         await api(payload);
-        await load();
+        await load(state.cycle?.id || null);
         status.textContent = responseType === 'can_bid' ? 'Availability confirmed.' : 'Request sent for Officer/Council approval.';
       } catch (error) {
         status.textContent = error.message;
@@ -266,15 +339,18 @@
         requestId: Number(row.dataset.requestId),
         decision: button.dataset.review,
       });
-      await load();
+      await load(state.cycle?.id || null);
       status.textContent = button.dataset.review === 'approve' ? 'Request approved.' : 'Request rejected.';
     } catch (error) {
       status.textContent = error.message;
     }
   });
 
-  load().catch((error) => {
+  const showLoadError = (error) => {
     const target = q('[data-mock-calendar], [data-mock-schedule], [data-request-queue]');
     if (target) target.innerHTML = '<div class="placeholder">' + escapeHtml(error.message) + '</div>';
-  });
+  };
+
+  const initialCycleId = Number(new URL(window.location.href).searchParams.get('cycleId') || 0);
+  load(initialCycleId || null).catch(showLoadError);
 })();

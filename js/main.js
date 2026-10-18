@@ -43,6 +43,7 @@
     const link = document.createElement('a');
     link.href = href;
     link.textContent = label;
+    link.dataset.authGenerated = 'true';
     if (window.location.pathname.endsWith(`/${href}`)) link.classList.add('active');
     const before = accountNav.querySelector('.profile-link, .logout-link, [data-theme-toggle]');
     accountNav.insertBefore(link, before || null);
@@ -115,11 +116,30 @@
   // Public visitors see Home + Events + Login.
   // Logged-in members unlock Members, Guild Essentials, and My Profile.
   // Council / Officers additionally unlock the staff-only Roster.
-  if (!document.body.classList.contains('login-page-body')) {
-    fetch('/api/auth/session', { credentials: 'same-origin' })
+  //
+  // Always reset auth UI before checking the session. This also prevents
+  // browser back/forward cache from showing Logout after the session ended.
+  const resetAuthUi = () => {
+    root.classList.remove('auth-member', 'auth-staff', 'auth-council');
+    if (loginLink) loginLink.hidden = false;
+    accountNav?.querySelectorAll('[data-auth-generated="true"]').forEach((link) => link.remove());
+  };
+
+  const syncAuthUi = () => {
+    resetAuthUi();
+
+    if (document.body.classList.contains('login-page-body')) return Promise.resolve();
+
+    return fetch('/api/auth/session', {
+      credentials: 'same-origin',
+      cache: 'no-store',
+    })
       .then((response) => response.ok ? response.json() : null)
       .then((session) => {
-        if (!session || !session.authenticated || !session.user) return;
+        if (!session || !session.authenticated || !session.user) {
+          resetAuthUi();
+          return;
+        }
 
         root.classList.add('auth-member');
         if (loginLink) loginLink.hidden = true;
@@ -135,8 +155,18 @@
           ensureAccountLink('admin.html', 'Admin');
         }
       })
-      .catch(() => {});
-  }
+      .catch(() => {
+        resetAuthUi();
+      });
+  };
+
+  syncAuthUi();
+
+  // Safari/iOS and other browsers may restore a page from BFCache after Logout.
+  // Revalidate the session whenever such a page is restored.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) syncAuthUi();
+  });
 
   // Automatic weekly guild event reminder + live countdown.
   // All TRIAD event call times use 20:00 (8:00 PM) GMT+8.
