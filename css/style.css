@@ -3096,3 +3096,91 @@ footer {
     width: calc(100% + 20px);
   }
 }
+
+
+/* TRIAD mobile hero lockup */
+.hero-mobile-lockup {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .home-page .hero-mobile-lockup {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .home-page .hero-mobile-mark {
+    width: 86px;
+    height: 86px;
+    flex: 0 0 86px;
+    display: grid;
+    place-items: center;
+  }
+
+  .home-page .hero-mobile-mark img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .home-page .hero-mobile-wording {
+    min-width: 0;
+    display: grid;
+    gap: 5px;
+  }
+
+  .home-page .hero-mobile-wording strong {
+    display: block;
+    font-size: clamp(54px, 16vw, 78px);
+    line-height: .82;
+    letter-spacing: -.07em;
+    font-weight: 900;
+  }
+
+  .home-page .hero-mobile-wording small {
+    display: block;
+    color: var(--muted);
+    font-size: clamp(8px, 2.4vw, 11px);
+    line-height: 1.25;
+    font-weight: 900;
+    letter-spacing: .16em;
+    white-space: nowrap;
+  }
+
+  .home-page .hero-desktop-eyebrow,
+  .home-page .hero-desktop-title,
+  .home-page .hero > .hero-mark {
+    display: none;
+  }
+
+  .home-page .hero {
+    gap: 0;
+  }
+
+  .home-page .hero-copy {
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-page .hero-mobile-lockup {
+    gap: 12px;
+  }
+
+  .home-page .hero-mobile-mark {
+    width: 72px;
+    height: 72px;
+    flex-basis: 72px;
+  }
+
+  .home-page .hero-mobile-wording strong {
+    font-size: clamp(48px, 15vw, 66px);
+  }
+
+  .home-page .hero-mobile-wording small {
+    font-size: clamp(7px, 2.2vw, 9px);
+    letter-spacing: .12em;
+  }
+}
