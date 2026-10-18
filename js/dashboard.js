@@ -4,12 +4,14 @@
   if (!dashboard) return;
 
   const q = (selector) => dashboard.querySelector(selector);
+
   const formatDate = (value) => {
     if (!value) return '';
     const date = new Date(String(value).slice(0, 10) + 'T12:00:00Z');
     if (Number.isNaN(date.getTime())) return String(value);
     return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
   };
+
   const countdownText = (value) => {
     if (!value) return '';
     const target = new Date(String(value).slice(0, 10) + 'T12:00:00Z');
@@ -19,6 +21,7 @@
     const days = Math.floor(hours / 24);
     return days > 0 ? days + 'D ' + (hours % 24) + 'H AWAY' : hours + 'H AWAY';
   };
+
   const verificationLabel = (status) => ({
     verified: 'VERIFIED',
     pending: 'PENDING',
@@ -27,15 +30,22 @@
   }[status] || 'UNVERIFIED');
 
   const nextGuildEvent = () => {
-    const offsetHours = 8, callHour = 20, hourMs = 3600000, dayMs = 86400000;
+    const offsetHours = 8;
+    const callHour = 20;
+    const hourMs = 3600000;
+    const dayMs = 86400000;
     const now = new Date();
     const guildNow = new Date(now.getTime() + offsetHours * hourMs);
-    const year = guildNow.getUTCFullYear(), month = guildNow.getUTCMonth(), date = guildNow.getUTCDate(), weekday = guildNow.getUTCDay();
+    const year = guildNow.getUTCFullYear();
+    const month = guildNow.getUTCMonth();
+    const date = guildNow.getUTCDate();
+    const weekday = guildNow.getUTCDay();
     const schedule = [
       { day: 2, name: 'Guild League', label: 'Tuesday' },
       { day: 4, name: 'Guild League', label: 'Thursday' },
       { day: 0, name: 'Emperium Overrun', label: 'Sunday' },
     ];
+
     return schedule.map((event) => {
       const dayOffset = (event.day - weekday + 7) % 7;
       const guildLocal = Date.UTC(year, month, date + dayOffset, callHour, 0, 0);
@@ -55,26 +65,65 @@
 
     q('[data-dashboard-event-name]').textContent = event.name;
     q('[data-dashboard-event-time]').textContent = event.label + ' · 20:00 GMT+8 · 21:00 JST';
-    q('[data-dashboard-event-countdown]').textContent = (days ? days + 'D ' : '') + hours + 'H ' + minutes + 'M';
+    q('[data-dashboard-event-countdown]').textContent =
+      (days ? days + 'D ' : '') + hours + 'H ' + minutes + 'M';
+  };
+
+  const getJson = async (url) => {
+    const response = await fetch(url, { credentials: 'same-origin' });
+    if (response.status === 401) return null;
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.message || data.error || 'Request failed.');
+    return data;
+  };
+
+  const renderBidding = (bidding) => {
+    const assignment = Array.isArray(bidding?.assignments) ? bidding.assignments[0] : null;
+
+    if (assignment?.scheduleStatus === 'needs_reschedule') {
+      q('[data-dashboard-bidding-date]').textContent = 'Needs Reschedule';
+      q('[data-dashboard-bidding-detail]').textContent =
+        'Council is finding an event with a complete equal-allocation package.';
+    } else if (assignment?.biddingDate) {
+      q('[data-dashboard-bidding-date]').textContent = formatDate(assignment.biddingDate);
+      q('[data-dashboard-bidding-detail]').textContent =
+        (assignment.eventLabel || 'Guild Event') +
+        (assignment.bidPosition ? ' · Position #' + assignment.bidPosition : '');
+      q('[data-dashboard-bidding-cycle]').textContent = countdownText(assignment.biddingDate);
+    } else {
+      q('[data-dashboard-bidding-date]').textContent = 'No Bidding Scheduled';
+      q('[data-dashboard-bidding-detail]').textContent = 'No current cycle assignment is available yet.';
+    }
+
+    if (bidding?.cycle) {
+      q('[data-dashboard-cycle-status]').textContent = String(bidding.cycle.status || '').toUpperCase();
+      q('[data-dashboard-cycle-detail]').textContent =
+        formatDate(bidding.cycle.startDate) + ' → ' + formatDate(bidding.cycle.endDate) +
+        ' · ' + (bidding.summary?.scheduled || 0) + ' scheduled' +
+        (bidding.summary?.needsReschedule ? ' · ' + bidding.summary.needsReschedule + ' reschedule' : '');
+    } else {
+      q('[data-dashboard-cycle-status]').textContent = 'NO ACTIVE CYCLE';
+      q('[data-dashboard-cycle-detail]').textContent = 'Create or open a bidding cycle from the manager.';
+    }
   };
 
   renderEvent();
   window.setInterval(renderEvent, 60000);
 
-  fetch('/api/dashboard', { credentials: 'same-origin' })
-    .then(async (response) => {
-      if (response.status === 401) return null;
-      const data = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(data.message || 'Could not load dashboard.');
-      return data;
-    })
-    .then((data) => {
-      if (!data) return;
+  Promise.all([
+    getJson('/api/auth/session'),
+    getJson('/api/members'),
+    getJson('/api/profile/me'),
+    getJson('/api/bidding-cycle?mine=1'),
+  ])
+    .then(async ([session, members, profileData, bidding]) => {
+      if (!session?.authenticated || !session.user) return;
 
-      q('[data-dashboard-role]').textContent = String(data.role || 'Member').toUpperCase();
-      q('[data-dashboard-member-count]').textContent = String(data.memberCount || 0);
+      const role = session.user.role || 'Member';
+      q('[data-dashboard-role]').textContent = String(role).toUpperCase();
+      q('[data-dashboard-member-count]').textContent = String(members?.members?.length || 0);
 
-      const profileStatus = data.profile?.verificationStatus || 'unverified';
+      const profileStatus = profileData?.profile?.verificationStatus || 'unverified';
       q('[data-dashboard-profile-status]').textContent = verificationLabel(profileStatus);
       q('[data-dashboard-profile-detail]').textContent =
         profileStatus === 'verified' ? 'Your current stats are verified.' :
@@ -82,34 +131,19 @@
         profileStatus === 'update_required' ? 'Staff requested an updated stat submission.' :
         'Submit your character stats for verification.';
 
-      if (data.myBidding?.scheduleStatus === 'needs_reschedule') {
-        q('[data-dashboard-bidding-date]').textContent = 'Needs Reschedule';
-        q('[data-dashboard-bidding-detail]').textContent = 'Council is finding an event with a complete equal-allocation package.';
-      } else if (data.myBidding?.biddingDate) {
-        q('[data-dashboard-bidding-date]').textContent = formatDate(data.myBidding.biddingDate);
-        q('[data-dashboard-bidding-detail]').textContent =
-          (data.myBidding.eventLabel || 'Guild Event') +
-          (data.myBidding.bidPosition ? ' · Position #' + data.myBidding.bidPosition : '');
-        q('[data-dashboard-bidding-cycle]').textContent = countdownText(data.myBidding.biddingDate);
-      } else {
-        q('[data-dashboard-bidding-date]').textContent = 'No Bidding Scheduled';
-        q('[data-dashboard-bidding-detail]').textContent = 'No current cycle assignment is available yet.';
-      }
+      renderBidding(bidding);
 
-      if (data.cycle) {
-        q('[data-dashboard-cycle-status]').textContent = String(data.cycle.status || '').toUpperCase();
-        q('[data-dashboard-cycle-detail]').textContent =
-          formatDate(data.cycle.startDate) + ' → ' + formatDate(data.cycle.endDate) +
-          ' · ' + data.cycle.scheduled + ' scheduled' +
-          (data.cycle.needsReschedule ? ' · ' + data.cycle.needsReschedule + ' reschedule' : '');
-      } else {
-        q('[data-dashboard-cycle-status]').textContent = 'NO ACTIVE CYCLE';
-        q('[data-dashboard-cycle-detail]').textContent = 'Create or open a bidding cycle from the manager.';
-      }
-
-      if (data.role === 'Council' || data.role === 'Officer') {
+      if (role === 'Council' || role === 'Officer') {
         root.classList.add('auth-staff');
-        q('[data-dashboard-pending]').textContent = String(data.pendingVerificationCount || 0);
+        try {
+          const roster = await getJson('/api/roster');
+          const pending = Array.isArray(roster?.roster)
+            ? roster.roster.filter((member) => member.verificationStatus === 'pending').length
+            : 0;
+          q('[data-dashboard-pending]').textContent = String(pending);
+        } catch (_) {
+          q('[data-dashboard-pending]').textContent = '—';
+        }
       }
     })
     .catch(() => {

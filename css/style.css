@@ -3889,3 +3889,120 @@ footer {
     letter-spacing: .1em;
   }
 }
+
+
+/* TRIAD home repair pass */
+:root.auth-member .guild-dashboard.member-only {
+  display: block !important;
+}
+
+:root.auth-staff .dashboard-card.staff-only {
+  display: flex !important;
+}
+
+@media (max-width: 700px) {
+  .home-page .hero {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .home-page .hero-mobile-lockup {
+    width: max-content;
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: 74px auto;
+    align-items: center;
+    justify-content: center;
+    column-gap: 12px;
+    margin-inline: auto;
+  }
+
+  .home-page .hero-mobile-mark {
+    width: 74px;
+    height: 74px;
+    flex: none;
+  }
+
+  .home-page .hero-mobile-wording {
+    justify-self: start;
+  }
+
+  .home-page .hero-copy {
+    margin-top: 18px;
+  }
+
+  .home-page .hero-actions {
+    margin-top: 20px;
+  }
+
+  .home-page .guild-dashboard {
+    margin-top: 28px;
+  }
+
+  .home-page .event-reminder {
+    margin-top: 24px;
+  }
+
+  .home-page .event-reminder-copy {
+    padding: 20px 18px;
+  }
+
+  .home-page .event-reminder-copy .eyebrow {
+    margin-bottom: 20px;
+  }
+
+  .home-page .event-reminder-heading h2 {
+    max-width: 100%;
+    font-size: clamp(32px, 9.4vw, 43px);
+    line-height: .94;
+  }
+
+  .home-page .event-reminder-when {
+    margin-top: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .home-page .event-countdown {
+    margin-top: 18px;
+  }
+
+  .home-page .event-countdown > div {
+    padding-top: 12px;
+    padding-bottom: 11px;
+  }
+
+  .home-page .event-countdown strong {
+    font-size: clamp(23px, 8vw, 32px);
+  }
+
+  .home-page .event-countdown span {
+    margin-top: 6px;
+    font-size: 8px;
+  }
+
+  .home-page .event-reminder-note {
+    margin-top: 18px;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-page .hero-mobile-lockup {
+    grid-template-columns: 64px auto;
+    column-gap: 9px;
+  }
+
+  .home-page .hero-mobile-mark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .home-page .hero-mobile-wording strong {
+    font-size: clamp(45px, 14vw, 59px);
+  }
+
+  .home-page .hero-mobile-wording small {
+    font-size: clamp(7px, 2vw, 8.5px);
+    letter-spacing: .09em;
+  }
+}
