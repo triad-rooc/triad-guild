@@ -213,6 +213,72 @@
     }
   };
 
+  const partyNumbersForGroup = (group) => {
+    if (group === 'full') return Array.from({ length: 16 }, (_, i) => i + 1);
+    if (group === 'raid1') return Array.from({ length: 8 }, (_, i) => i + 1);
+    if (group === 'raid2') return Array.from({ length: 8 }, (_, i) => i + 9);
+    return [];
+  };
+
+  const averagePosition = (partyNumbers) => {
+    const boardState = currentBoard();
+    const parties = partyNumbers.map((partyNumber) => boardState.parties[partyNumber]).filter(Boolean);
+    if (!parties.length) return { x: 50, y: 50 };
+    return {
+      x: parties.reduce((sum, party) => sum + Number(party.x), 0) / parties.length,
+      y: parties.reduce((sum, party) => sum + Number(party.y), 0) / parties.length,
+    };
+  };
+
+  const shiftPartyGroup = (partyNumbers, requestedDx, requestedDy) => {
+    const boardState = currentBoard();
+    const points = [];
+    partyNumbers.forEach((partyNumber) => {
+      const party = boardState.parties[partyNumber];
+      if (!party) return;
+      points.push({ x: Number(party.x), y: Number(party.y) });
+      party.players.forEach((player) => points.push({ x: Number(player.x), y: Number(player.y) }));
+    });
+    if (!points.length) return { dx: 0, dy: 0 };
+
+    const minX = Math.min(...points.map((point) => point.x));
+    const maxX = Math.max(...points.map((point) => point.x));
+    const minY = Math.min(...points.map((point) => point.y));
+    const maxY = Math.max(...points.map((point) => point.y));
+
+    const dx = Math.max(3 - minX, Math.min(97 - maxX, requestedDx));
+    const dy = Math.max(3 - minY, Math.min(97 - maxY, requestedDy));
+
+    partyNumbers.forEach((partyNumber) => {
+      const party = boardState.parties[partyNumber];
+      if (!party) return;
+      party.x += dx;
+      party.y += dy;
+      party.players.forEach((player) => {
+        player.x += dx;
+        player.y += dy;
+      });
+    });
+    return { dx, dy };
+  };
+
+  const createGroupToken = ({ group, label, position, color = 1 }) => {
+    const token = document.createElement('button');
+    token.type = 'button';
+    token.className = `planner-token aggregate-piece ${group === 'full' ? 'full-raid-piece' : 'raid-piece'}`;
+    token.dataset.group = group;
+    token.dataset.color = String(color);
+    token.dataset.member = '';
+    token.style.left = position.x + '%';
+    token.style.top = position.y + '%';
+    token.style.setProperty('--float-delay', group === 'full' ? '-.6s' : group === 'raid1' ? '-.9s' : '-1.2s');
+    token.innerHTML = `<span>${label}</span>`;
+    token.title = group === 'full'
+      ? 'Full Raid · Parties 1–16 · drag to move all parties together'
+      : `${label} · drag to move all 8 parties together`;
+    tokenLayer.appendChild(token);
+  };
+
   const createToken = ({ partyNumber, member = null, position }) => {
     const token = document.createElement('button');
     token.type = 'button';
@@ -245,6 +311,36 @@
   const buildTokens = () => {
     tokenLayer.innerHTML = '';
     const boardState = currentBoard();
+
+    if (state.mode === 'EO' && state.view === 'full') {
+      createGroupToken({
+        group: 'full',
+        label: 'FULL',
+        position: averagePosition(partyNumbersForGroup('full')),
+        color: 1,
+      });
+      return;
+    }
+
+    if (state.mode === 'EO' && state.view === 'raids') {
+      if (state.raids[1]) {
+        createGroupToken({
+          group: 'raid1',
+          label: 'R1',
+          position: averagePosition(partyNumbersForGroup('raid1')),
+          color: 1,
+        });
+      }
+      if (state.raids[2]) {
+        createGroupToken({
+          group: 'raid2',
+          label: 'R2',
+          position: averagePosition(partyNumbersForGroup('raid2')),
+          color: 4,
+        });
+      }
+      return;
+    }
 
     for (let partyNumber = 1; partyNumber <= currentPartyCount(); partyNumber += 1) {
       const party = boardState.parties[partyNumber];
@@ -495,6 +591,24 @@
     if (!token) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
+    const group = token.dataset.group || null;
+    const pointer = positionFromPointer(event);
+
+    if (group) {
+      checkpoint();
+      selectedParty = null;
+      token.setPointerCapture(event.pointerId);
+      token.classList.add('dragging');
+      drag = {
+        token,
+        group,
+        partyNumbers: partyNumbersForGroup(group),
+        last: pointer,
+      };
+      event.preventDefault();
+      return;
+    }
+
     const partyNumber = Number(token.dataset.party);
     const member = token.dataset.member ? Number(token.dataset.member) : null;
     const party = currentBoard().parties[partyNumber];
@@ -506,9 +620,10 @@
     token.classList.add('dragging');
     drag = {
       token,
+      group: null,
       partyNumber,
       member,
-      last: positionFromPointer(event),
+      last: pointer,
     };
     event.preventDefault();
   });
@@ -516,6 +631,22 @@
   tokenLayer.addEventListener('pointermove', (event) => {
     if (!drag) return;
     const next = positionFromPointer(event);
+
+    if (drag.group) {
+      const requestedDx = next.x - drag.last.x;
+      const requestedDy = next.y - drag.last.y;
+      const moved = shiftPartyGroup(drag.partyNumbers, requestedDx, requestedDy);
+      const currentLeft = parseFloat(drag.token.style.left);
+      const currentTop = parseFloat(drag.token.style.top);
+      drag.token.style.left = (currentLeft + moved.dx) + '%';
+      drag.token.style.top = (currentTop + moved.dy) + '%';
+      drag.last = {
+        x: drag.last.x + moved.dx,
+        y: drag.last.y + moved.dy,
+      };
+      return;
+    }
+
     const party = currentBoard().parties[drag.partyNumber];
 
     if (drag.member === null) {

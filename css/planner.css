@@ -119,3 +119,11 @@ html[data-theme="light"] .planner-segmented button.active{
 .planner-map-image{
   background:#0b1220;
 }
+
+.planner-token.aggregate-piece{--piece-size:62px;border-width:3px}
+.planner-token.aggregate-piece span{font-size:.72rem;letter-spacing:.06em}
+.planner-token.full-raid-piece{--piece-size:70px;--piece-color:#7b8494;--piece-light:#c0c6cf;--piece-dark:#363b45}
+.planner-token.raid-piece{--piece-size:62px}
+.planner-token.raid-piece[data-color="1"]{--piece-color:#668fd6;--piece-light:#a9c5ff;--piece-dark:#304c7a}
+.planner-token.raid-piece[data-color="4"]{--piece-color:#956fc0;--piece-light:#cbb4e6;--piece-dark:#543b70}
+@media(max-width:680px){.planner-token.aggregate-piece{--piece-size:54px}.planner-token.full-raid-piece{--piece-size:60px}}
