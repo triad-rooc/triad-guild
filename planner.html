@@ -73,7 +73,7 @@
       <div>
         <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — TACTICAL COMMAND</p>
         <h1>EO / GL Planner</h1>
-        <p>Build formations for one 80-player mega raid, split into two raids and eight parties per raid.</p>
+        <p>Plan directly on the ROOC battle maps with movable raid, party, and player pieces.</p>
       </div>
       <div class="planner-save-state" data-save-state>Local autosave active</div>
     </section>
@@ -93,16 +93,16 @@
           <select class="planner-map-select" data-map-select aria-label="Battle map"></select>
         </div>
 
-        <div class="planner-panel" data-eo-structure>
+        <div class="planner-panel" data-eo-only>
           <p class="planner-panel-label">EO STRUCTURE</p>
           <div class="planner-segmented planner-view-switch" role="group" aria-label="EO structure">
             <button class="active" type="button" data-view="mega">Mega Raid</button>
             <button type="button" data-view="split">2 Raids</button>
           </div>
-          <p class="planner-help">Mega Raid shows all 80 players together. Two Raids lets you independently hide Raid 1 or Raid 2 without moving any pieces.</p>
+          <p class="planner-help">Mega Raid keeps all 16 parties together. Two Raids separates Raid 1 (P1–8) and Raid 2 (P9–16) and lets you hide either raid without losing positions.</p>
         </div>
 
-        <div class="planner-panel" data-raid-visibility>
+        <div class="planner-panel" data-eo-only>
           <div class="planner-panel-row">
             <p class="planner-panel-label">RAID VISIBILITY</p>
             <button class="planner-text-button" type="button" data-show-all>Show all</button>
@@ -119,12 +119,23 @@
           </label>
         </div>
 
+        <div class="planner-panel" data-gl-only hidden>
+          <p class="planner-panel-label">GL RAID</p>
+          <div class="planner-segmented" role="group" aria-label="GL raid">
+            <button class="active" type="button" data-gl-raid="main">Main Raid</button>
+            <button type="button" data-gl-raid="sub">Sub Raid</button>
+          </div>
+          <p class="planner-help">GL uses eight parties / 40 players per raid. Main and Sub keep separate saved positions.</p>
+        </div>
+
         <div class="planner-panel">
           <div class="planner-panel-row">
             <p class="planner-panel-label">PARTIES</p>
             <button class="planner-text-button" type="button" data-clear-party-filter>All</button>
           </div>
           <div class="party-grid" data-party-grid></div>
+          <button class="button planner-full-button" type="button" data-toggle-party-split disabled>Split selected party</button>
+          <p class="planner-help" data-party-help>Select a party to focus it or split it into five player pieces.</p>
         </div>
 
         <div class="planner-panel">
@@ -133,7 +144,7 @@
             <button class="button" type="button" data-undo disabled>Undo</button>
             <button class="button" type="button" data-redo disabled>Redo</button>
           </div>
-          <button class="button planner-full-button" type="button" data-reset-layout>Reset Layout</button>
+          <button class="button planner-full-button" type="button" data-reset-layout>Reset Current Map</button>
         </div>
 
         <div class="planner-panel">
@@ -149,7 +160,7 @@
           <p class="planner-panel-label">ACCESSIBILITY</p>
           <label class="planner-check">
             <input type="checkbox" data-reduced-motion />
-            Reduce token motion
+            Reduce piece motion
           </label>
         </div>
       </aside>
@@ -157,20 +168,20 @@
       <div class="planner-workspace">
         <div class="planner-toolbar">
           <div>
-            <strong data-board-title>EO — Mega Raid</strong>
+            <strong data-board-title>EO — World Map</strong>
             <span data-board-subtitle>80 players · 16 parties · 2 raids</span>
           </div>
           <div class="planner-legend">
-            <span><i class="party-color c1"></i>Party A</span>
-            <span><i class="party-color c2"></i>Party B</span>
-            <span><i class="party-color c3"></i>Party C</span>
-            <span><i class="party-color c4"></i>Party D</span>
+            <span><i class="party-color c1"></i>Color 1</span>
+            <span><i class="party-color c2"></i>Color 2</span>
+            <span><i class="party-color c3"></i>Color 3</span>
+            <span><i class="party-color c4"></i>Color 4</span>
           </div>
         </div>
 
         <div class="planner-board-wrap">
           <div class="planner-board" data-board tabindex="0" aria-label="Tactical planning board">
-            <img class="planner-map-image" data-map-image alt="" draggable="false" />
+            <img class="planner-map-image" data-map-image src="" alt="" draggable="false" />
             <div class="planner-raid-zone planner-raid-zone-one" data-raid-zone="1"><span>RAID 1</span></div>
             <div class="planner-raid-zone planner-raid-zone-two" data-raid-zone="2"><span>RAID 2</span></div>
             <div class="planner-tokens" data-token-layer></div>
@@ -182,7 +193,7 @@
             <span>Strategy Notes</span>
             <textarea rows="4" placeholder="Callouts, rotations, regroup points, assignments..." data-notes></textarea>
           </label>
-          <p>Saved automatically in this browser with the current formation.</p>
+          <p>Notes and map positions save automatically in this browser.</p>
         </div>
       </div>
     </section>
