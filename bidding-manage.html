@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="TRIAD staff bidding management." />
+  <meta name="description" content="TRIAD two-week bidding cycle manager." />
   <meta name="color-scheme" content="dark light" />
   <meta name="robots" content="noindex,nofollow" />
-  <title>TRIAD | Bidding Manager</title>
+  <title>TRIAD | Bidding Cycle Manager</title>
   <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-light.svg" media="(prefers-color-scheme: light)" />
   <link rel="icon" type="image/svg+xml" href="assets/logo/triad-mark-on-dark.svg" media="(prefers-color-scheme: dark)" />
   <script>
@@ -50,7 +50,7 @@
           </div>
         </div>
       </nav>
-      <div class="account-nav">
+      <div class="account-nav" data-account-nav>
         <a class="login-link" data-login-link href="login.html">Login</a>
         <a class="profile-link member-session-only" href="profile.html">My Profile</a>
         <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
@@ -62,54 +62,214 @@
   <main class="page">
     <section class="page-header">
       <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — STAFF</p>
-      <h1>Bidding Manager</h1>
-      <p>Assign and update the next bidding schedule for TRIAD members. Available to Council and Officers.</p>
+      <h1>Bidding Cycle</h1>
+      <p>Plan the full two-week cycle: 4 Guild Leagues, 2 Emperium Overruns, equal item allocations, calendar adjustments, swaps, locks, and roulette.</p>
     </section>
 
     <section class="section">
       <div class="section-heading-row">
         <div>
-          <p class="eyebrow"><span class="section-marker">⟁</span>ASSIGNMENTS</p>
-          <h2>Designate Bidding List</h2>
+          <p class="eyebrow"><span class="section-marker">⟁</span>NEW CYCLE</p>
+          <h2>Start a Two-Week Cycle</h2>
         </div>
-        <a class="button" href="bidding.html">View Bidding Monitor</a>
+        <a class="button" href="bidding.html">Member View</a>
       </div>
 
-      <p class="admin-section-note">Choose the member's category, page, slot, guild event, and date. Selecting a guild event automatically fills its next date, but you can change the date manually.</p>
-
-      <div class="bidding-admin-toolbar">
-        <label class="roster-search">
-          <span>Search Member</span>
-          <input type="search" placeholder="IGN or Job" data-bidding-admin-search />
+      <div class="cycle-create-grid">
+        <label class="profile-field">
+          <span>Cycle Start (Tuesday)</span>
+          <input type="date" data-cycle-start />
         </label>
-        <label class="roster-control">
-          <span>Category</span>
-          <select data-bidding-admin-filter>
-            <option value="all">All Categories</option>
-            <option value="Illusion Card Fragment">Illusion Card Fragment</option>
-            <option value="Light & Dark Feathers">Light & Dark Feathers</option>
-            <option value="Time & Space Feathers">Time & Space Feathers</option>
-            <option value="none">No Bidding Assigned</option>
-          </select>
+        <label class="profile-field">
+          <span>Fragments / Member</span>
+          <input type="number" min="1" value="3" data-cycle-limit="fragment" />
         </label>
+        <label class="profile-field">
+          <span>Light & Dark / Member</span>
+          <input type="number" min="1" value="12" data-cycle-limit="lightDark" />
+        </label>
+        <label class="profile-field">
+          <span>Time & Space / Member</span>
+          <input type="number" min="1" value="15" data-cycle-limit="timeSpace" />
+        </label>
+        <button class="button primary" type="button" data-cycle-create>Create Draft Cycle</button>
       </div>
-
-      <div class="bidding-admin-list" data-bidding-admin-list>
-        <div class="placeholder">Loading bidding assignments...</div>
-      </div>
-      <p class="profile-form-status" data-bidding-admin-status aria-live="polite"></p>
+      <p class="profile-form-status" data-cycle-status aria-live="polite"></p>
     </section>
+
+    <div data-cycle-workspace hidden>
+      <section class="section">
+        <div class="cycle-overview" data-cycle-overview></div>
+        <div class="cycle-actions">
+          <button class="button primary" type="button" data-randomize>Randomize / Rebuild Preview</button>
+          <button class="button" type="button" data-undo-randomize>Undo Randomization</button>
+          <select class="cycle-status-select" data-cycle-status-select>
+            <option value="draft">Draft</option>
+            <option value="open">Open</option>
+            <option value="locked">Locked</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button class="button" type="button" data-cycle-save-status>Update Cycle Status</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>EQUAL ALLOCATION</p>
+            <h2>Per-Member Limits</h2>
+          </div>
+        </div>
+
+        <div class="cycle-limit-grid">
+          <label class="profile-field">
+            <span>Illusion Fragments</span>
+            <input type="number" min="1" data-active-limit="fragment" />
+          </label>
+          <label class="profile-field">
+            <span>Light & Dark Feathers</span>
+            <input type="number" min="1" data-active-limit="lightDark" />
+          </label>
+          <label class="profile-field">
+            <span>Time & Space Feathers</span>
+            <input type="number" min="1" data-active-limit="timeSpace" />
+          </label>
+          <button class="button" type="button" data-save-limits>Save Limits</button>
+        </div>
+        <p class="admin-section-note">Nobody receives a partial package automatically. If stock cannot support every scheduled bidder, the event capacity is reduced and the system suggests a calendar move for Council to confirm.</p>
+      </section>
+
+      <section class="section">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>STOCK & CAPACITY</p>
+            <h2>Six Guild Events</h2>
+          </div>
+          <p class="directory-count" data-capacity-summary></p>
+        </div>
+
+        <div class="cycle-event-grid" data-cycle-events></div>
+        <div class="cycle-shortages" data-cycle-shortages></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>CALENDAR</p>
+            <h2>Cycle Schedule</h2>
+          </div>
+          <p class="directory-count" data-cycle-assignment-count></p>
+        </div>
+
+        <div class="cycle-tools">
+          <label class="roster-search">
+            <span>Search Member</span>
+            <input type="search" placeholder="IGN or Job" data-cycle-search />
+          </label>
+          <label class="roster-control">
+            <span>Event</span>
+            <select data-cycle-filter>
+              <option value="all">All Events</option>
+              <option value="reschedule">Needs Reschedule</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="cycle-assignment-list" data-cycle-assignments></div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>SWAP</p>
+            <h2>Swap Two Members</h2>
+          </div>
+        </div>
+
+        <div class="cycle-swap-grid">
+          <label class="profile-field">
+            <span>Member A</span>
+            <select data-swap-a></select>
+          </label>
+          <label class="profile-field">
+            <span>Member B</span>
+            <select data-swap-b></select>
+          </label>
+          <button class="button" type="button" data-swap>Swap Assignments</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>ROULETTE</p>
+            <h2>Extra / Excess Distribution</h2>
+          </div>
+        </div>
+
+        <div class="roulette-grid">
+          <label class="profile-field">
+            <span>Pool</span>
+            <select data-roulette-scope>
+              <option value="all">Whole Guild</option>
+              <option value="event">Current Event</option>
+              <option value="selected">Selected Members</option>
+            </select>
+          </label>
+
+          <label class="profile-field">
+            <span>Event</span>
+            <select data-roulette-event></select>
+          </label>
+
+          <label class="profile-field">
+            <span>Category / Reason</span>
+            <select data-roulette-category>
+              <option>Excess Illusion Fragments</option>
+              <option>Extra Light & Dark Feathers</option>
+              <option>Extra Time & Space Feathers</option>
+              <option>Replacement Bidder</option>
+              <option>Extra / Excess</option>
+            </select>
+          </label>
+
+          <label class="profile-field roulette-selected">
+            <span>Selected Members</span>
+            <select multiple size="6" data-roulette-selected></select>
+          </label>
+
+          <label class="cycle-check">
+            <input type="checkbox" checked data-exclude-winners />
+            Exclude previous roulette winners this cycle
+          </label>
+
+          <label class="cycle-check">
+            <input type="checkbox" data-exclude-event />
+            Exclude members already assigned to selected event
+          </label>
+
+          <button class="button primary" type="button" data-roulette-spin>Spin Roulette</button>
+          <button class="button" type="button" data-roulette-quick>Quick Random</button>
+        </div>
+
+        <div class="roulette-display" data-roulette-display>Ready to spin.</div>
+        <div class="roulette-history" data-roulette-history></div>
+      </section>
+    </div>
   </main>
 
   <footer>
-    <span class="footer-brand"><span class="brand-logo">
-      <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
-      <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
-    </span><span>TRIAD</span></span>
-    <span>Council & Officers · Bidding Manager</span>
+    <span class="footer-brand">
+      <span class="brand-logo">
+        <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+        <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+      </span>
+      <span>TRIAD</span>
+    </span>
+    <span>Two-Week Bidding Cycle Manager</span>
   </footer>
 
   <script src="js/main.js"></script>
-  <script src="js/admin-bidding.js"></script>
+  <script src="js/bidding-cycle-admin.js"></script>
 </body>
 </html>
