@@ -31,8 +31,7 @@
   const navToggle = document.querySelector('.nav-toggle');
   const headerMenu = document.querySelector('[data-header-menu]');
   const themeToggle = document.querySelector('[data-theme-toggle]');
-  const dropdown = document.querySelector('[data-nav-dropdown]');
-  const dropdownToggle = document.querySelector('[data-nav-dropdown-toggle]');
+  const getDropdowns = () => [...document.querySelectorAll('[data-nav-dropdown]')];
   const loginLink = document.querySelector('[data-login-link]');
   const accountNav = document.querySelector('.account-nav');
 
@@ -47,6 +46,44 @@
     if (window.location.pathname.endsWith(`/${href}`)) link.classList.add('active');
     const before = accountNav.querySelector('.profile-link, .logout-link, [data-theme-toggle]');
     accountNav.insertBefore(link, before || null);
+  };
+
+  const ensureAdminToolsMenu = ({ council = false } = {}) => {
+    if (!accountNav) return;
+
+    let dropdown = accountNav.querySelector('[data-admin-tools-dropdown]');
+    if (!dropdown) {
+      dropdown = document.createElement('div');
+      dropdown.className = 'nav-dropdown admin-tools-dropdown';
+      dropdown.dataset.navDropdown = '';
+      dropdown.dataset.adminToolsDropdown = '';
+      dropdown.dataset.authGenerated = 'true';
+      dropdown.innerHTML =
+        '<button class="nav-dropdown-toggle" type="button" aria-expanded="false" data-nav-dropdown-toggle>' +
+          'Admin <span class="nav-caret" aria-hidden="true">▾</span>' +
+        '</button>' +
+        '<div class="nav-dropdown-menu" data-admin-tools-menu></div>';
+
+      const before = accountNav.querySelector('.profile-link, .logout-link, [data-theme-toggle]');
+      accountNav.insertBefore(dropdown, before || null);
+    }
+
+    const menu = dropdown.querySelector('[data-admin-tools-menu]');
+    const items = [];
+    if (council) items.push(['admin.html', 'Admin Panel']);
+    items.push(['bidding-manage.html', 'Bidding Manager']);
+    items.push(['mock-bidding.html', 'Mock Bidding']);
+
+    menu.innerHTML = items.map(([href, label]) => {
+      const active = window.location.pathname.endsWith('/' + href) ? ' class="active"' : '';
+      return '<a' + active + ' href="' + href + '">' + label + '</a>';
+    }).join('');
+
+    const toggle = dropdown.querySelector('[data-nav-dropdown-toggle]');
+    const active = items.some(([href]) => window.location.pathname.endsWith('/' + href));
+    toggle.classList.toggle('active', active);
+
+    bindDropdowns();
   };
 
   const updateThemeButton = () => {
@@ -99,19 +136,36 @@
     });
   }
 
-  if (dropdown && dropdownToggle) {
-    dropdownToggle.addEventListener('click', () => {
-      const isOpen = dropdown.classList.toggle('open');
-      dropdownToggle.setAttribute('aria-expanded', String(isOpen));
-    });
+  const bindDropdowns = () => {
+    getDropdowns().forEach((dropdown) => {
+      if (dropdown.dataset.dropdownBound === 'true') return;
+      const dropdownToggle = dropdown.querySelector('[data-nav-dropdown-toggle]');
+      if (!dropdownToggle) return;
 
-    document.addEventListener('click', (event) => {
+      dropdown.dataset.dropdownBound = 'true';
+      dropdownToggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const willOpen = !dropdown.classList.contains('open');
+        getDropdowns().forEach((other) => {
+          other.classList.remove('open');
+          other.querySelector('[data-nav-dropdown-toggle]')?.setAttribute('aria-expanded', 'false');
+        });
+        dropdown.classList.toggle('open', willOpen);
+        dropdownToggle.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+  };
+
+  bindDropdowns();
+
+  document.addEventListener('click', (event) => {
+    getDropdowns().forEach((dropdown) => {
       if (!dropdown.contains(event.target)) {
         dropdown.classList.remove('open');
-        dropdownToggle.setAttribute('aria-expanded', 'false');
+        dropdown.querySelector('[data-nav-dropdown-toggle]')?.setAttribute('aria-expanded', 'false');
       }
     });
-  }
+  });
 
   // Public visitors see Home + Events + Login.
   // Logged-in members unlock Members, Guild Essentials, and My Profile.
@@ -122,7 +176,7 @@
   const resetAuthUi = () => {
     root.classList.remove('auth-member', 'auth-staff', 'auth-council');
     if (loginLink) loginLink.hidden = false;
-    accountNav?.querySelectorAll('[data-auth-generated="true"]').forEach((link) => link.remove());
+    accountNav?.querySelectorAll('[data-auth-generated="true"]').forEach((node) => node.remove());
   };
 
   const syncAuthUi = () => {
@@ -146,13 +200,11 @@
 
         if (session.user.role === 'Council' || session.user.role === 'Officer') {
           root.classList.add('auth-staff');
-          ensureAccountLink('bidding-manage.html', 'Bidding Manager');
-          ensureAccountLink('mock-bidding.html', 'Mock Bidding');
+          ensureAdminToolsMenu({ council: session.user.role === 'Council' });
         }
 
         if (session.user.role === 'Council') {
           root.classList.add('auth-council');
-          ensureAccountLink('admin.html', 'Admin');
         }
       })
       .catch(() => {

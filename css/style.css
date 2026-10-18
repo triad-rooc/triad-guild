@@ -667,13 +667,12 @@ footer {
 }
 
 .site-nav {
-  position: static;
-  left: auto;
-  transform: none;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 28px;
-  margin-left: 10px;
 }
 
 .site-nav > a,
@@ -4788,5 +4787,30 @@ footer {
 
   .mock-schedule-ffa span {
     text-align: left;
+  }
+}
+
+
+/* Staff tools live under the Admin dropdown instead of as separate header links. */
+.account-nav .admin-tools-dropdown > .nav-dropdown-toggle {
+  min-height: 76px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+.account-nav .admin-tools-dropdown > .nav-dropdown-toggle:hover,
+.account-nav .admin-tools-dropdown > .nav-dropdown-toggle.active {
+  color: var(--text);
+}
+@media (max-width: 1100px) {
+  .account-nav .admin-tools-dropdown {
+    width: 100%;
+  }
+  .account-nav .admin-tools-dropdown > .nav-dropdown-toggle {
+    width: 100%;
+    min-height: 44px;
+    justify-content: space-between;
   }
 }
