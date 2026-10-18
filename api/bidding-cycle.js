@@ -1,6 +1,7 @@
 
 import { requireSameOrigin, requireSession, requireStaff } from '../lib/api-auth.js';
 import { databaseError, ensureSchema, getSql } from '../lib/db.js';
+import { handleMockBidding } from '../lib/mock-bidding.js';
 
 const EVENT_TEMPLATE = [
   { order: 1, offset: 0, type: 'GL', label: 'GL #1 · Tuesday', cap: 15 },
@@ -245,6 +246,11 @@ async function saveAction(sql, cycleId, type, payload, uid) {
 }
 
 export default async function handler(req, res) {
+  const requestUrl = new URL(req.url, 'http://localhost');
+  if (requestUrl.searchParams.get('mock') === '1') {
+    return handleMockBidding(req, res);
+  }
+
   res.setHeader('Cache-Control', 'no-store');
 
   try {

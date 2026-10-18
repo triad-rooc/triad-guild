@@ -126,3 +126,81 @@ CREATE TABLE IF NOT EXISTS bidding_roulette_results (
   created_by TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+
+-- Isolated mock bidding sandbox. These tables never reference or mutate live member_profiles.
+CREATE TABLE IF NOT EXISTS mock_bidding_members (
+  mock_member_id TEXT PRIMARY KEY,
+  ign VARCHAR(64) NOT NULL,
+  job VARCHAR(32) NOT NULL,
+  guild_role VARCHAR(16) NOT NULL DEFAULT 'Member',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS mock_bidding_cycles (
+  id BIGSERIAL PRIMARY KEY,
+  start_date DATE NOT NULL,
+  end_date DATE NOT NULL,
+  status VARCHAR(16) NOT NULL DEFAULT 'draft',
+  fragment_per_member INTEGER NOT NULL DEFAULT 3,
+  light_dark_per_member INTEGER NOT NULL DEFAULT 12,
+  time_space_per_member INTEGER NOT NULL DEFAULT 15,
+  created_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS mock_bidding_events (
+  id BIGSERIAL PRIMARY KEY,
+  cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
+  event_order INTEGER NOT NULL,
+  event_type VARCHAR(8) NOT NULL,
+  event_label VARCHAR(64) NOT NULL,
+  bidding_date DATE NOT NULL,
+  base_capacity INTEGER NOT NULL,
+  fragment_stock INTEGER NOT NULL DEFAULT 0,
+  light_dark_stock INTEGER NOT NULL DEFAULT 0,
+  time_space_stock INTEGER NOT NULL DEFAULT 0,
+  effective_capacity INTEGER NOT NULL DEFAULT 0,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (cycle_id, event_order)
+);
+
+CREATE TABLE IF NOT EXISTS mock_bidding_assignments (
+  id BIGSERIAL PRIMARY KEY,
+  cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
+  event_id BIGINT REFERENCES mock_bidding_events(id) ON DELETE SET NULL,
+  mock_member_id TEXT NOT NULL REFERENCES mock_bidding_members(mock_member_id) ON DELETE CASCADE,
+  event_order INTEGER,
+  bid_position INTEGER,
+  schedule_status VARCHAR(24) NOT NULL DEFAULT 'scheduled',
+  outcome_status VARCHAR(24) NOT NULL DEFAULT 'pending',
+  locked BOOLEAN NOT NULL DEFAULT FALSE,
+  fairness_score NUMERIC(12,2) NOT NULL DEFAULT 0,
+  slot_map JSONB NOT NULL DEFAULT '{}'::jsonb,
+  note VARCHAR(240),
+  updated_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (cycle_id, mock_member_id)
+);
+
+CREATE TABLE IF NOT EXISTS mock_bidding_actions (
+  id BIGSERIAL PRIMARY KEY,
+  cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
+  action_type VARCHAR(40) NOT NULL,
+  payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+  created_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS mock_bidding_roulette_results (
+  id BIGSERIAL PRIMARY KEY,
+  cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
+  event_id BIGINT REFERENCES mock_bidding_events(id) ON DELETE SET NULL,
+  category VARCHAR(80),
+  mock_member_id TEXT NOT NULL REFERENCES mock_bidding_members(mock_member_id) ON DELETE CASCADE,
+  pool_scope VARCHAR(24) NOT NULL,
+  created_by TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

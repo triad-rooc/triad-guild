@@ -127,6 +127,7 @@
         if (session.user.role === 'Council' || session.user.role === 'Officer') {
           root.classList.add('auth-staff');
           ensureAccountLink('bidding-manage.html', 'Bidding Manager');
+          ensureAccountLink('mock-bidding.html', 'Mock Bidding');
         }
 
         if (session.user.role === 'Council') {

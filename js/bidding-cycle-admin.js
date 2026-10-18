@@ -1,6 +1,9 @@
 
 (() => {
   const q = (selector) => document.querySelector(selector);
+  const isMock = document.body.dataset.biddingMode === 'mock';
+  const apiBase = isMock ? '/api/bidding-cycle?mock=1' : '/api/bidding-cycle';
+  const loadUrl = isMock ? '/api/bidding-cycle?manage=1&mock=1' : '/api/bidding-cycle?manage=1';
   const workspace = q('[data-cycle-workspace]');
   const status = q('[data-cycle-status]');
   const eventsEl = q('[data-cycle-events]');
@@ -47,7 +50,7 @@
   };
 
   const api = async (payload) => {
-    const response = await fetch('/api/bidding-cycle', {
+    const response = await fetch(apiBase, {
       method: 'POST',
       credentials: 'same-origin',
       headers: { 'Content-Type': 'application/json' },
@@ -212,7 +215,7 @@
   };
 
   const load = async () => {
-    const response = await fetch('/api/bidding-cycle?manage=1', { credentials: 'same-origin' });
+    const response = await fetch(loadUrl, { credentials: 'same-origin' });
     const data = await response.json().catch(() => ({}));
 
     if (response.status === 403) {
@@ -244,7 +247,7 @@
         timeSpacePerMember: Number(q('[data-cycle-limit="timeSpace"]').value),
       });
       await load();
-      setStatus('Draft cycle created. Default stock exactly covers the base 80-member cycle.', 'success');
+      setStatus(isMock ? 'Mock cycle created with Player 1–80. Live roster and live bidding data were not touched.' : 'Draft cycle created. Default stock exactly covers the base 80-member cycle.', 'success');
     } catch (error) {
       setStatus(error.message, 'error');
     }
@@ -267,7 +270,7 @@
   });
 
   q('[data-randomize]')?.addEventListener('click', async () => {
-    if (!window.confirm('Rebuild the preview using previous-cycle fairness? Locked members stay in their current events.')) return;
+    if (!window.confirm(isMock ? 'Randomize Player 1–80 in the mock sandbox? Locked test players stay in their current events.' : 'Rebuild the preview using previous-cycle fairness? Locked members stay in their current events.')) return;
     try {
       setStatus('Randomizing members...');
       await api({ action: 'randomize', cycleId: state.cycle.id });
