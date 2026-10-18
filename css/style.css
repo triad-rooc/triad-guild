@@ -3184,3 +3184,100 @@ footer {
     letter-spacing: .12em;
   }
 }
+
+
+/* TRIAD centered mobile menu final */
+@media (max-width: 700px) {
+  .header-menu {
+    padding-top: 18px;
+  }
+
+  .site-nav {
+    width: 100%;
+  }
+
+  :root.auth-member .site-nav > a.member-only,
+  :root.auth-staff .site-nav > a.staff-only,
+  .site-nav > a,
+  .nav-dropdown-toggle {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 !important;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .site-nav > a.active::before {
+    margin-right: 9px;
+  }
+
+  :root.auth-member .nav-dropdown.member-only {
+    display: block !important;
+    width: 100%;
+  }
+
+  .nav-dropdown-toggle {
+    position: relative;
+    padding-left: 34px !important;
+    padding-right: 34px !important;
+  }
+
+  .nav-dropdown-toggle .nav-caret {
+    position: absolute;
+    right: 12px;
+    margin-left: 0;
+  }
+
+  .nav-dropdown-menu {
+    width: 100%;
+    margin: 0;
+    padding: 4px 0 8px;
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    text-align: center;
+  }
+
+  .nav-dropdown-menu a {
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 10px !important;
+    text-align: center;
+  }
+
+  .account-nav {
+    margin-top: 16px;
+    padding-top: 16px;
+    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :root.auth-member .account-nav .member-session-only,
+  .account-nav a,
+  .account-nav button {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    height: 48px;
+    padding: 0 10px !important;
+    margin: 0 !important;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .account-nav .theme-toggle {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 420px) {
+  .account-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .account-nav .theme-toggle {
+    grid-column: auto;
+  }
+}
