@@ -667,12 +667,13 @@ footer {
 }
 
 .site-nav {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  position: static;
+  left: auto;
+  transform: none;
   display: flex;
   align-items: center;
   gap: 28px;
+  margin-left: 10px;
 }
 
 .site-nav > a,
