@@ -80,3 +80,41 @@ box-shadow:inset 0 2px 4px rgba(255,255,255,.28),inset 0 -7px 10px rgba(0,0,0,.2
 @media(max-width:980px){.planner-shell{grid-template-columns:1fr}.planner-sidebar{position:static;grid-template-columns:repeat(2,minmax(0,1fr))}.planner-titlebar{align-items:flex-start;flex-direction:column}}
 @media(max-width:680px){.planner-sidebar{grid-template-columns:1fr}.planner-toolbar{align-items:flex-start;flex-direction:column}.planner-board-wrap{padding:8px}.planner-token{--piece-size:43px}.planner-token.player-piece{--piece-size:28px}.planner-legend{display:none}}
 @media(prefers-reduced-motion:reduce){.planner-token{animation:none}}
+
+/* Planner interaction-state fixes */
+.planner-segmented button{
+  position:relative;
+  min-height:38px;
+  transition:background .16s ease,color .16s ease,box-shadow .16s ease,opacity .16s ease;
+}
+.planner-segmented button.active{
+  background:#f4f2e9!important;
+  color:#090a0c!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.55)!important;
+}
+html[data-theme="light"] .planner-segmented button.active{
+  background:#111214!important;
+  color:#fff!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)!important;
+}
+.planner-segmented button:not(.active):not(:disabled):hover,
+.party-filter:not(:disabled):hover,
+.button:not(:disabled):hover,
+.planner-text-button:not(:disabled):hover{
+  filter:brightness(1.18);
+}
+.party-filter.active{
+  background:rgba(255,255,255,.09);
+  outline:2px solid var(--party-color);
+  outline-offset:-2px;
+}
+.button:disabled,
+.planner-segmented button:disabled,
+.party-filter:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  filter:none;
+}
+.planner-map-image{
+  background:#0b1220;
+}
