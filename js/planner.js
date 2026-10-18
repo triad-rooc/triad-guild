@@ -18,18 +18,18 @@
   const subtitle = root.querySelector('[data-board-subtitle]');
   const saveState = document.querySelector('[data-save-state]');
 
-  const STORAGE_KEY = 'triad-planner-v3';
+  const STORAGE_KEY = 'triad-planner-v4';
   const FORMATIONS_KEY = 'triad-planner-formations-v3';
   const MAX_HISTORY = 60;
 
   const MAPS = {
     EO: [
-      { key: 'world', label: 'World Map', src: 'assets/planner/eo-world.webp', ratio: '560 / 315' },
-      { key: 'castle', label: 'Inside Castle', src: 'assets/planner/eo-castle.webp', ratio: '560 / 453' },
-      { key: 'emp', label: 'Emperium Room', src: 'assets/planner/eo-emperium-room.webp', ratio: '560 / 394' },
+      { key: 'world', label: 'World Map', src: '/assets/planner/eo-world.webp', ratio: '560 / 315' },
+      { key: 'castle', label: 'Inside Castle', src: '/assets/planner/eo-castle.webp', ratio: '560 / 453' },
+      { key: 'emp', label: 'Emperium Room', src: '/assets/planner/eo-emperium-room.webp', ratio: '560 / 394' },
     ],
     GL: [
-      { key: 'gl', label: 'Vale of Clash', src: 'assets/planner/gl-vale-of-clash.webp', ratio: '600 / 360' },
+      { key: 'gl', label: 'Vale of Clash', src: '/assets/planner/gl-vale-of-clash.webp', ratio: '600 / 360' },
     ],
   };
 
@@ -108,11 +108,17 @@
           : ['full', 'raids', 'parties'].includes(saved.view)
             ? saved.view
             : fallback.view;
+      const safeMode = saved.mode === 'GL' ? 'GL' : 'EO';
+      const safeMapByMode = {
+        EO: ['world', 'castle', 'emp'].includes(saved.mapByMode?.EO) ? saved.mapByMode.EO : fallback.mapByMode.EO,
+        GL: saved.mapByMode?.GL === 'gl' ? 'gl' : fallback.mapByMode.GL,
+      };
       return {
         ...fallback,
         ...saved,
+        mode: safeMode,
         view: savedView,
-        mapByMode: { ...fallback.mapByMode, ...(saved.mapByMode || {}) },
+        mapByMode: safeMapByMode,
         raids: { ...fallback.raids, ...(saved.raids || {}) },
         boards: { ...fallback.boards, ...(saved.boards || {}) },
         notesByBoard: { ...fallback.notesByBoard, ...(saved.notesByBoard || {}) },
@@ -136,7 +142,19 @@
 
   const ensureBoard = () => {
     const key = currentBoardKey();
-    if (!state.boards[key]) state.boards[key] = defaultBoard(state.mode);
+    const expectedCount = state.mode === 'EO' ? 16 : 8;
+    const boardState = state.boards[key];
+    const valid = boardState
+      && boardState.parties
+      && Array.from({ length: expectedCount }, (_, i) => i + 1).every((partyNumber) => {
+        const party = boardState.parties[partyNumber];
+        return party
+          && Number.isFinite(Number(party.x))
+          && Number.isFinite(Number(party.y))
+          && Array.isArray(party.players)
+          && party.players.length === 5;
+      });
+    if (!valid) state.boards[key] = defaultBoard(state.mode);
     return state.boards[key];
   };
 
