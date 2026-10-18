@@ -208,6 +208,25 @@ CREATE TABLE IF NOT EXISTS mock_bidding_actions (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS mock_bidding_requests (
+  id BIGSERIAL PRIMARY KEY,
+  cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
+  mock_member_id TEXT NOT NULL REFERENCES mock_bidding_members(mock_member_id) ON DELETE CASCADE,
+  current_event_id BIGINT REFERENCES mock_bidding_events(id) ON DELETE SET NULL,
+  requested_event_id BIGINT REFERENCES mock_bidding_events(id) ON DELETE SET NULL,
+  response_type VARCHAR(24) NOT NULL,
+  reason VARCHAR(80),
+  note VARCHAR(240),
+  status VARCHAR(24) NOT NULL DEFAULT 'pending',
+  reviewed_by TEXT,
+  reviewed_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS mock_bidding_requests_cycle_idx
+ON mock_bidding_requests (cycle_id, status, created_at DESC);
+
 CREATE TABLE IF NOT EXISTS mock_bidding_roulette_results (
   id BIGSERIAL PRIMARY KEY,
   cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,

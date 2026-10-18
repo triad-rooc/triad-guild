@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Detailed read-only mock bidding schedule." />
+  <meta name="color-scheme" content="dark light" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>TRIAD | Mock Bidding Schedule</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script>
+    (() => {
+      try {
+        const saved = localStorage.getItem('triad-theme');
+        const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+        document.documentElement.dataset.theme = saved || (prefersLight ? 'light' : 'dark');
+      } catch (_) { document.documentElement.dataset.theme = 'dark'; }
+    })();
+  </script>
+</head>
+<body data-mock-bidding-view="schedule">
+<header class="site-header">
+  <a class="brand" href="index.html"><span class="brand-word">TRIAD</span></a>
+  <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
+  <div class="header-menu" data-header-menu>
+    <nav class="site-nav"><a href="index.html">Home</a><a href="mock-bidding.html">Mock Bidding</a></nav>
+    <div class="account-nav" data-account-nav>
+      <a class="login-link" data-login-link href="login.html">Login</a>
+      <a class="profile-link member-session-only" href="profile.html">My Profile</a>
+      <a class="logout-link member-session-only" href="/api/auth/logout">Logout</a>
+      <button class="theme-toggle" type="button" data-theme-toggle>LIGHT</button>
+    </div>
+  </div>
+</header>
+<main class="page">
+  <section class="page-header"><p class="eyebrow"><span class="section-marker">⟁</span>MOCK BIDDING</p><h1>Bidding Schedule</h1><p>Detailed bidder positions and item page/slot assignments.</p></section>
+  <nav class="mock-bidding-tabs" aria-label="Bidding views">
+  <span class="mock-bidding-tabs-label">BIDDING</span>
+  <a href="mock-bidding-calendar.html">Bidding Calendar</a>
+  <a class="active" href="mock-bidding-schedule.html">Bidding Schedule</a>
+  <a href="mock-bidding-requests.html">Bidding Requests</a>
+  <a href="mock-bidding.html">Manage Sandbox</a>
+</nav>
+  <section class="mock-bidding-banner"><strong>TEST MODE</strong><span>Read-only sandbox view. Live bidding is untouched.</span></section>
+  <section class="section">
+    <div class="section-heading-row"><div><p class="eyebrow"><span class="section-marker">⟁</span>CURRENT CYCLE</p><h2 data-mock-cycle-label>Loading...</h2></div></div>
+    <div class="mock-schedule-grid" data-mock-schedule></div>
+  </section>
+</main>
+<footer><span>TRIAD</span><span>Mock Bidding Sandbox</span></footer>
+<script src="js/main.js"></script>
+<script src="js/mock-bidding-portal.js"></script>
+</body></html>
