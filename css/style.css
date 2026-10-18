@@ -4006,3 +4006,25 @@ footer {
     letter-spacing: .09em;
   }
 }
+
+
+/* Mobile hero wordmark without knot */
+@media (max-width: 700px) {
+  .home-page .hero-mobile-lockup {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .home-page .hero-mobile-wording {
+    justify-self: auto;
+    text-align: center;
+  }
+
+  .home-page .hero-mobile-wording strong,
+  .home-page .hero-mobile-wording small {
+    text-align: center;
+  }
+}
