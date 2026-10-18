@@ -37,7 +37,22 @@
   <a class="brand" href="index.html"><span class="brand-word">TRIAD</span></a>
   <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
   <div class="header-menu" data-header-menu>
-    <nav class="site-nav"><a href="index.html">Home</a><a href="mock-bidding.html">Mock Bidding</a></nav>
+    <nav class="site-nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a>
+        <a class="member-only" href="members.html">Members</a>
+        <a href="events.html">Events</a>
+        <a class="staff-only" href="roster.html">Roster</a>
+        <div class="nav-dropdown member-only" data-nav-dropdown>
+          <button class="nav-dropdown-toggle" type="button" aria-expanded="false" data-nav-dropdown-toggle>
+            Guild Essentials <span class="nav-caret" aria-hidden="true">▾</span>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="bidding.html">Bidding</a>
+            <a href="guides.html">Guides</a>
+            <a href="planner.html">EO / GL Planner</a>
+          </div>
+        </div>
+      </nav>
     <div class="account-nav" data-account-nav>
       <a class="login-link" data-login-link href="login.html">Login</a>
       <a class="profile-link member-session-only" href="profile.html">My Profile</a>
