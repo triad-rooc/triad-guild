@@ -4,6 +4,8 @@
 
   const board = root.querySelector('[data-board]');
   const tokenLayer = root.querySelector('[data-token-layer]');
+  const mapImage = root.querySelector('[data-map-image]');
+  const mapSelect = root.querySelector('[data-map-select]');
   const partyGrid = root.querySelector('[data-party-grid]');
   const notes = root.querySelector('[data-notes]');
   const undoButton = root.querySelector('[data-undo]');
@@ -13,9 +15,23 @@
   const title = root.querySelector('[data-board-title]');
   const subtitle = root.querySelector('[data-board-subtitle]');
   const saveState = document.querySelector('[data-save-state]');
-  const STORAGE_KEY = 'triad-planner-v2';
-  const FORMATIONS_KEY = 'triad-planner-formations-v2';
+  const eoStructure = root.querySelector('[data-eo-structure]');
+  const raidVisibility = root.querySelector('[data-raid-visibility]');
+
+  const STORAGE_KEY = 'triad-planner-v3';
+  const FORMATIONS_KEY = 'triad-planner-formations-v3';
   const MAX_HISTORY = 50;
+
+  const MAPS = {
+    EO: [
+      { key: 'world', label: 'World Map', src: 'assets/planner/eo-world.webp', ratio: '1648 / 928' },
+      { key: 'castle', label: 'Inside Castle', src: 'assets/planner/eo-castle.webp', ratio: '1394 / 1128' },
+      { key: 'emp', label: 'Emperium Room', src: 'assets/planner/eo-emperium-room.webp', ratio: '1400 / 960' },
+    ],
+    GL: [
+      { key: 'gl', label: 'Vale of Clash', src: 'assets/planner/gl-vale-of-clash.webp', ratio: '1329 / 797' },
+    ],
+  };
 
   let history = [];
   let future = [];
@@ -46,25 +62,41 @@
     return positions;
   };
 
+  const defaultBoards = () => ({
+    'EO:world': defaultPositions(),
+    'EO:castle': defaultPositions(),
+    'EO:emp': defaultPositions(),
+    'GL:gl': defaultPositions(),
+  });
+
   const loadState = () => {
     const fallback = {
       mode: 'EO',
+      map: 'world',
       view: 'mega',
       raids: { 1: true, 2: true },
       reducedMotion: false,
-      notes: '',
-      positions: defaultPositions(),
+      notes: {},
+      boards: defaultBoards(),
     };
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
-      if (!saved || !saved.positions) return fallback;
-      return { ...fallback, ...saved, raids: { ...fallback.raids, ...(saved.raids || {}) }, positions: { ...fallback.positions, ...saved.positions } };
+      if (!saved) return fallback;
+      return {
+        ...fallback,
+        ...saved,
+        raids: { ...fallback.raids, ...(saved.raids || {}) },
+        notes: { ...fallback.notes, ...(saved.notes || {}) },
+        boards: { ...fallback.boards, ...(saved.boards || {}) },
+      };
     } catch (_) {
       return fallback;
     }
   };
 
   let state = loadState();
+  const boardKey = () => `${state.mode}:${state.map}`;
+  const positions = () => state.boards[boardKey()];
 
   const cloneState = () => JSON.parse(JSON.stringify(state));
   const checkpoint = () => {
@@ -92,7 +124,7 @@
 
   const buildTokens = () => {
     tokenLayer.innerHTML = '';
-    Object.entries(state.positions).forEach(([id, pos], index) => {
+    Object.entries(positions()).forEach(([id, pos], index) => {
       const token = document.createElement('button');
       token.type = 'button';
       token.className = 'planner-token';
@@ -123,29 +155,52 @@
     }
   };
 
+  const renderMapSelect = () => {
+    const maps = MAPS[state.mode];
+    if (!maps.some((item) => item.key === state.map)) state.map = maps[0].key;
+    mapSelect.innerHTML = maps.map((item) => `<option value="${item.key}">${item.label}</option>`).join('');
+    mapSelect.value = state.map;
+    const current = maps.find((item) => item.key === state.map) || maps[0];
+    mapImage.src = current.src;
+    mapImage.alt = `${state.mode} ${current.label} map`;
+    board.style.aspectRatio = current.ratio;
+  };
+
   const render = () => {
+    renderMapSelect();
     document.querySelectorAll('[data-mode]').forEach((button) => button.classList.toggle('active', button.dataset.mode === state.mode));
     document.querySelectorAll('[data-view]').forEach((button) => button.classList.toggle('active', button.dataset.view === state.view));
     document.querySelectorAll('[data-raid-toggle]').forEach((input) => { input.checked = Boolean(state.raids[input.dataset.raid]); });
-    board.dataset.view = state.view;
+
+    const isEO = state.mode === 'EO';
+    eoStructure.hidden = !isEO;
+    raidVisibility.hidden = !isEO;
+    board.dataset.view = isEO ? state.view : 'mega';
     board.classList.toggle('reduce-motion', state.reducedMotion);
     root.querySelector('[data-reduced-motion]').checked = state.reducedMotion;
-    notes.value = state.notes || '';
+    notes.value = state.notes[boardKey()] || '';
+
+    buildTokens();
 
     root.querySelectorAll('.planner-token').forEach((token) => {
-      const pos = state.positions[token.dataset.tokenId];
+      const pos = positions()[token.dataset.tokenId];
       token.style.left = pos.x + '%';
       token.style.top = pos.y + '%';
-      const raidHidden = state.view === 'split' && !state.raids[token.dataset.raid];
+      const raidHidden = isEO && state.view === 'split' && !state.raids[token.dataset.raid];
       token.classList.toggle('hidden-raid', raidHidden);
       token.classList.toggle('filtered', partyFilter !== null && Number(token.dataset.party) !== partyFilter);
     });
 
     root.querySelectorAll('[data-party-filter]').forEach((button) => button.classList.toggle('active', Number(button.dataset.partyFilter) === partyFilter));
-    title.textContent = `${state.mode} — ${state.view === 'mega' ? 'Mega Raid' : '2 Raids'}`;
-    subtitle.textContent = state.mode === 'EO'
+
+    const mapMeta = MAPS[state.mode].find((item) => item.key === state.map);
+    title.textContent = isEO
+      ? `EO — ${mapMeta.label} — ${state.view === 'mega' ? 'Mega Raid' : '2 Raids'}`
+      : `GL — ${mapMeta.label}`;
+    subtitle.textContent = isEO
       ? '80 players · 16 parties · 2 raids'
-      : 'Planner board · party positioning mode';
+      : 'Vale of Clash tactical board';
+
     updateHistoryButtons();
     persist();
   };
@@ -160,6 +215,8 @@
     if (mode) {
       if (state.mode !== mode.dataset.mode) checkpoint();
       state.mode = mode.dataset.mode;
+      state.map = MAPS[state.mode][0].key;
+      partyFilter = null;
       render();
       return;
     }
@@ -195,7 +252,7 @@
 
     if (event.target.closest('[data-reset-layout]')) {
       checkpoint();
-      state.positions = defaultPositions();
+      state.boards[boardKey()] = defaultPositions();
       render();
       return;
     }
@@ -222,6 +279,14 @@
   });
 
   root.addEventListener('change', (event) => {
+    if (event.target.matches('[data-map-select]')) {
+      checkpoint();
+      state.map = event.target.value;
+      partyFilter = null;
+      render();
+      return;
+    }
+
     const raidToggle = event.target.closest('[data-raid-toggle]');
     if (raidToggle) {
       checkpoint();
@@ -229,6 +294,7 @@
       render();
       return;
     }
+
     if (event.target.matches('[data-reduced-motion]')) {
       checkpoint();
       state.reducedMotion = event.target.checked;
@@ -237,7 +303,7 @@
   });
 
   notes.addEventListener('input', () => {
-    state.notes = notes.value;
+    state.notes[boardKey()] = notes.value;
     persist();
   });
 
@@ -262,8 +328,8 @@
   tokenLayer.addEventListener('pointermove', (event) => {
     if (!drag) return;
     const pos = positionFromPointer(event);
-    state.positions[drag.id].x = pos.x;
-    state.positions[drag.id].y = pos.y;
+    positions()[drag.id].x = pos.x;
+    positions()[drag.id].y = pos.y;
     drag.token.style.left = pos.x + '%';
     drag.token.style.top = pos.y + '%';
   });
@@ -274,6 +340,7 @@
     drag = null;
     persist();
   };
+
   tokenLayer.addEventListener('pointerup', endDrag);
   tokenLayer.addEventListener('pointercancel', endDrag);
 
@@ -281,19 +348,20 @@
     try { return JSON.parse(localStorage.getItem(FORMATIONS_KEY) || '{}'); } catch (_) { return {}; }
   };
 
+  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  }[char]));
+
   const renderFormations = () => {
-    const formations = getFormations();
-    const entries = Object.entries(formations);
+    const entries = Object.entries(getFormations());
     formationsEl.innerHTML = entries.length ? entries.map(([key, item]) => `
       <div class="formation-row">
-        <span class="formation-name" title="${item.name}">${escapeHtml(item.name)}</span>
+        <span class="formation-name" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</span>
         <button class="button" type="button" data-load-formation="${key}">Load</button>
         <button class="button" type="button" data-delete-formation="${key}">×</button>
       </div>
     `).join('') : '<span class="planner-help">No saved formations yet.</span>';
   };
-
-  const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
 
   const saveFormation = () => {
     const name = formationName.value.trim();
@@ -323,7 +391,6 @@
     renderFormations();
   };
 
-  buildTokens();
   buildPartyFilters();
   renderFormations();
   render();

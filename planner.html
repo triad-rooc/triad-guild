@@ -89,6 +89,11 @@
         </div>
 
         <div class="planner-panel">
+          <p class="planner-panel-label">MAP</p>
+          <select class="planner-map-select" data-map-select aria-label="Battle map"></select>
+        </div>
+
+        <div class="planner-panel" data-eo-structure>
           <p class="planner-panel-label">EO STRUCTURE</p>
           <div class="planner-segmented planner-view-switch" role="group" aria-label="EO structure">
             <button class="active" type="button" data-view="mega">Mega Raid</button>
@@ -165,10 +170,7 @@
 
         <div class="planner-board-wrap">
           <div class="planner-board" data-board tabindex="0" aria-label="Tactical planning board">
-            <div class="planner-map-grid" aria-hidden="true"></div>
-            <div class="planner-map-label planner-map-label-top">NORTH / ENTRY</div>
-            <div class="planner-map-label planner-map-label-center">OBJECTIVE</div>
-            <div class="planner-map-label planner-map-label-bottom">SOUTH / BACKLINE</div>
+            <img class="planner-map-image" data-map-image alt="" draggable="false" />
             <div class="planner-raid-zone planner-raid-zone-one" data-raid-zone="1"><span>RAID 1</span></div>
             <div class="planner-raid-zone planner-raid-zone-two" data-raid-zone="2"><span>RAID 2</span></div>
             <div class="planner-tokens" data-token-layer></div>
