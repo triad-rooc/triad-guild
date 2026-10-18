@@ -82,7 +82,7 @@
   const fallbackState = () => ({
     mode: 'EO',
     mapByMode: { EO: 'world', GL: 'gl' },
-    view: 'mega',
+    view: 'full',
     raids: { 1: true, 2: true },
     glRaid: 'main',
     reducedMotion: false,
@@ -101,9 +101,17 @@
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
       if (!saved) return fallback;
+      const savedView = saved.view === 'mega'
+        ? 'full'
+        : saved.view === 'split'
+          ? 'raids'
+          : ['full', 'raids', 'parties'].includes(saved.view)
+            ? saved.view
+            : fallback.view;
       return {
         ...fallback,
         ...saved,
+        view: savedView,
         mapByMode: { ...fallback.mapByMode, ...(saved.mapByMode || {}) },
         raids: { ...fallback.raids, ...(saved.raids || {}) },
         boards: { ...fallback.boards, ...(saved.boards || {}) },
@@ -209,6 +217,7 @@
     }
 
     const hiddenRaid = state.mode === 'EO'
+      && state.view === 'raids'
       && !state.raids[raidForParty(partyNumber)];
     token.classList.toggle('hidden-raid', hiddenRaid);
 
@@ -292,16 +301,20 @@
     });
     root.querySelectorAll('[data-raid-zone]').forEach((zone) => {
       const raid = zone.dataset.raidZone;
-      zone.hidden = state.mode !== 'EO' || !state.raids[raid];
+      zone.hidden = state.mode !== 'EO' || state.view !== 'raids' || !state.raids[raid];
     });
     root.querySelectorAll('[data-eo-only]').forEach((element) => { element.hidden = state.mode !== 'EO'; });
+    const raidVisibilityPanel = root.querySelector('[data-eo-raid-visibility]');
+    if (raidVisibilityPanel) raidVisibilityPanel.hidden = state.mode !== 'EO' || state.view !== 'raids';
+    const partyPanel = root.querySelector('[data-party-panel]');
+    if (partyPanel) partyPanel.hidden = state.mode === 'EO' && state.view !== 'parties';
     root.querySelectorAll('[data-gl-only]').forEach((element) => { element.hidden = state.mode !== 'GL'; });
 
     buildMapSelect();
     mapImage.src = map.src;
     mapImage.alt = `${state.mode} ${map.label} battle map`;
     board.style.aspectRatio = map.ratio;
-    board.dataset.view = state.mode === 'EO' ? state.view : 'mega';
+    board.dataset.view = state.mode === 'EO' ? state.view : 'full';
     board.classList.toggle('reduce-motion', state.reducedMotion);
     root.querySelector('[data-reduced-motion]').checked = state.reducedMotion;
 
@@ -314,7 +327,7 @@
 
     title.textContent = `${state.mode} — ${map.label}`;
     subtitle.textContent = state.mode === 'EO'
-      ? `80 players · 16 parties · ${state.view === 'mega' ? '1 mega raid' : '2 raids'}`
+      ? `80 players · 16 parties · ${state.view === 'full' ? '1 full raid' : state.view === 'raids' ? '2 raids · 8 parties each' : '16 individual parties'}`
       : `40 players · 8 parties · ${state.glRaid === 'main' ? 'Main Raid' : 'Sub Raid'}`;
 
     updateHistoryButtons();
@@ -339,6 +352,7 @@
       if (state.mode === 'EO' && view.dataset.view !== state.view) {
         checkpoint();
         state.view = view.dataset.view;
+        selectedParty = null;
         render();
       }
       return;

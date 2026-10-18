@@ -96,13 +96,14 @@
         <div class="planner-panel" data-eo-only>
           <p class="planner-panel-label">EO STRUCTURE</p>
           <div class="planner-segmented planner-view-switch" role="group" aria-label="EO structure">
-            <button class="active" type="button" data-view="mega">Mega Raid</button>
-            <button type="button" data-view="split">2 Raids</button>
+            <button class="active" type="button" data-view="full">1 Full Raid</button>
+            <button type="button" data-view="raids">2 Raids</button>
+            <button type="button" data-view="parties">16 Parties</button>
           </div>
-          <p class="planner-help">Mega Raid keeps all 16 parties together. Two Raids separates Raid 1 (P1–8) and Raid 2 (P9–16) and lets you hide either raid without losing positions.</p>
+          <p class="planner-help">1 Full Raid keeps Parties 1–16 together. 2 Raids separates Raid 1 (P1–8) and Raid 2 (P9–16). 16 Parties gives direct individual party control.</p>
         </div>
 
-        <div class="planner-panel" data-eo-only>
+        <div class="planner-panel" data-eo-only data-eo-raid-visibility>
           <div class="planner-panel-row">
             <p class="planner-panel-label">RAID VISIBILITY</p>
             <button class="planner-text-button" type="button" data-show-all>Show all</button>
@@ -128,7 +129,7 @@
           <p class="planner-help">GL uses eight parties / 40 players per raid. Main and Sub keep separate saved positions.</p>
         </div>
 
-        <div class="planner-panel">
+        <div class="planner-panel" data-party-panel>
           <div class="planner-panel-row">
             <p class="planner-panel-label">PARTIES</p>
             <button class="planner-text-button" type="button" data-clear-party-filter>All</button>

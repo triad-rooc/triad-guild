@@ -9,6 +9,7 @@
 .planner-panel-label{font-size:.68rem;letter-spacing:.16em;font-weight:800;margin:0 0 10px;opacity:.7}
 .planner-panel-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
 .planner-segmented{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line,rgba(255,255,255,.15));border-radius:10px;overflow:hidden}
+.planner-view-switch{grid-template-columns:repeat(3,1fr)}
 .planner-segmented button{border:0;background:transparent;color:inherit;padding:9px 8px;cursor:pointer;font:inherit;font-size:.78rem;font-weight:700}
 .planner-segmented button.active{background:currentColor;color:var(--bg,#111)}
 html[data-theme="light"] .planner-segmented button.active{color:#fff;background:#111}
@@ -47,7 +48,7 @@ html[data-theme="light"] .planner-segmented button.active{color:#fff;background:
 .planner-raid-zone span{position:absolute;top:10px;font-size:.6rem;letter-spacing:.16em;font-weight:800;opacity:.68;background:rgba(8,10,14,.68);padding:4px 7px;border-radius:999px}
 .planner-raid-zone-one{left:0}.planner-raid-zone-two{right:0}
 .planner-raid-zone-one span{left:12px}.planner-raid-zone-two span{right:12px}
-.planner-board[data-view="split"] .planner-raid-zone{opacity:1}
+.planner-board[data-view="raids"] .planner-raid-zone{opacity:1}
 
 /* Carved, layered board pieces inspired by traditional round game discs. */
 .planner-token{--piece-size:50px;--piece-color:#6f9df0;--piece-light:#a9c5ff;--piece-dark:#35558c;position:absolute;width:var(--piece-size);height:var(--piece-size);margin-left:calc(var(--piece-size)/-2);margin-top:calc(var(--piece-size)/-2);border:2px solid rgba(246,224,164,.92);border-radius:50%;padding:0;display:grid;place-items:center;cursor:grab;z-index:4;color:#fff;background:
