@@ -3739,3 +3739,153 @@ footer {
     text-align: center;
   }
 }
+
+
+/* TRIAD guild dashboard */
+.guild-dashboard {
+  margin: 72px 0 0;
+  padding: 48px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.dashboard-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+.dashboard-heading h2 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 48px);
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+.dashboard-heading p:last-child {
+  max-width: 680px;
+  margin: 12px 0 0;
+  color: var(--muted);
+}
+.dashboard-role {
+  flex: 0 0 auto;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .16em;
+}
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+.dashboard-card {
+  min-height: 190px;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--panel);
+  transition: background-color .16s ease;
+}
+.dashboard-card:hover { background: var(--panel-2); }
+.dashboard-card-primary {
+  background: var(--inverse-bg);
+  color: var(--inverse-text);
+}
+.dashboard-card-primary:hover { background: var(--inverse-bg); }
+.dashboard-label {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .15em;
+}
+.dashboard-card-primary .dashboard-label,
+.dashboard-card-primary small,
+.dashboard-card-primary em {
+  color: currentColor;
+  opacity: .62;
+}
+.dashboard-card strong {
+  display: block;
+  margin-top: 28px;
+  font-size: clamp(23px, 3vw, 34px);
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+.dashboard-card small {
+  display: block;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.dashboard-card em {
+  display: block;
+  margin-top: auto;
+  padding-top: 22px;
+  color: var(--muted);
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* Mobile home alignment fix */
+@media (max-width: 700px) {
+  .home-page .hero-mobile-lockup {
+    width: 100%;
+    justify-content: center;
+    margin-inline: auto;
+  }
+
+  .home-page .hero-mobile-wording {
+    text-align: left;
+  }
+
+  .guild-dashboard {
+    margin-top: 34px;
+    padding: 34px 0;
+  }
+
+  .dashboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    min-height: 150px;
+  }
+
+  .dashboard-card strong {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 420px) {
+  .home-page .hero-mobile-lockup {
+    gap: 10px;
+  }
+
+  .home-page .hero-mobile-mark {
+    width: 68px;
+    height: 68px;
+    flex-basis: 68px;
+  }
+
+  .home-page .hero-mobile-wording strong {
+    font-size: clamp(46px, 14.5vw, 62px);
+  }
+
+  .home-page .hero-mobile-wording small {
+    font-size: clamp(7px, 2.05vw, 9px);
+    letter-spacing: .1em;
+  }
+}

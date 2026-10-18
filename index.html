@@ -84,6 +84,62 @@
     </section>
 
 
+
+    <section class="guild-dashboard member-only" data-guild-dashboard aria-label="TRIAD member dashboard">
+      <div class="dashboard-heading">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>MEMBER DASHBOARD</p>
+          <h2>Guild Command Center</h2>
+          <p>Your next event, current bidding cycle, guild status, and staff actions in one place.</p>
+        </div>
+        <span class="dashboard-role" data-dashboard-role>MEMBER</span>
+      </div>
+
+      <div class="dashboard-grid">
+        <a class="dashboard-card dashboard-card-primary" href="events.html">
+          <span class="dashboard-label">NEXT GUILD EVENT</span>
+          <strong data-dashboard-event-name>Loading...</strong>
+          <small data-dashboard-event-time>Checking the weekly schedule.</small>
+          <em data-dashboard-event-countdown>—</em>
+        </a>
+
+        <a class="dashboard-card" href="bidding.html">
+          <span class="dashboard-label">MY BIDDING</span>
+          <strong data-dashboard-bidding-date>Loading...</strong>
+          <small data-dashboard-bidding-detail>Checking your current cycle assignment.</small>
+          <em data-dashboard-bidding-cycle></em>
+        </a>
+
+        <a class="dashboard-card" href="members.html">
+          <span class="dashboard-label">GUILD MEMBERS</span>
+          <strong data-dashboard-member-count>—</strong>
+          <small>Registered TRIAD member profiles</small>
+          <em>View directory</em>
+        </a>
+
+        <a class="dashboard-card staff-only" href="roster.html" data-dashboard-verification-card>
+          <span class="dashboard-label">PENDING VERIFICATIONS</span>
+          <strong data-dashboard-pending>—</strong>
+          <small>Profiles waiting for Council / Officer review</small>
+          <em>Review queue</em>
+        </a>
+
+        <a class="dashboard-card staff-only" href="bidding-manage.html">
+          <span class="dashboard-label">BIDDING CYCLE</span>
+          <strong data-dashboard-cycle-status>—</strong>
+          <small data-dashboard-cycle-detail>No active cycle loaded.</small>
+          <em>Open Bidding Manager</em>
+        </a>
+
+        <a class="dashboard-card" href="profile.html">
+          <span class="dashboard-label">MY PROFILE</span>
+          <strong data-dashboard-profile-status>—</strong>
+          <small data-dashboard-profile-detail>Checking profile verification.</small>
+          <em>Open profile</em>
+        </a>
+      </div>
+    </section>
+
     <section class="event-reminder" aria-label="Weekly guild event reminder">
       <div class="event-reminder-copy">
         <p class="eyebrow"><span class="section-marker">⟁</span>WEEKLY GUILD REMINDER</p>
@@ -153,5 +209,6 @@
     <span>Guild Hub</span>
   </footer>
   <script src="js/main.js"></script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
