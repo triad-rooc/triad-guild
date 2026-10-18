@@ -35,6 +35,16 @@
     })();
   </script>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body.mock-embed .site-header,body.mock-embed>footer,body.mock-embed .page-header{display:none!important}
+    body.mock-embed .page{padding-top:12px;max-width:none}
+    body.mock-embed .mock-bidding-tabs{margin-top:0}
+  </style>
+  <script>
+    if (new URLSearchParams(location.search).get('embed') === '1') {
+      document.addEventListener('DOMContentLoaded', () => document.body.classList.add('mock-embed'));
+    }
+  </script>
 </head>
 <body data-bidding-mode="mock">
   <header class="site-header">

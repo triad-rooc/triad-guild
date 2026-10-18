@@ -3,20 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Tactical planning workspace for TRIAD raids and parties." />
+  <meta name="description" content="Interactive tactical planner for TRIAD Ragnarok Origin Classic EO and GL." />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="TRIAD" />
   <meta property="og:title" content="TRIAD | EO / GL Planner" />
-  <meta property="og:description" content="Tactical planning workspace for TRIAD raids and parties." />
+  <meta property="og:description" content="Interactive tactical planner for TRIAD Ragnarok Origin Classic EO and GL." />
   <meta property="og:url" content="https://triad-guild.vercel.app/planner.html" />
   <meta property="og:image" content="https://triad-guild.vercel.app/assets/social/triad-og-banner.jpg" />
-  <meta property="og:image:type" content="image/jpeg" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="TRIAD website announcement" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="TRIAD | EO / GL Planner" />
-  <meta name="twitter:description" content="Tactical planning workspace for TRIAD raids and parties." />
+  <meta name="twitter:description" content="Interactive tactical planner for TRIAD Ragnarok Origin Classic EO and GL." />
   <meta name="twitter:image" content="https://triad-guild.vercel.app/assets/social/triad-og-banner.jpg" />
   <meta name="color-scheme" content="dark light" />
   <title>TRIAD | EO / GL Planner</title>
@@ -34,6 +30,7 @@
     })();
   </script>
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/planner.css" />
 </head>
 <body>
   <header class="site-header">
@@ -47,17 +44,17 @@
     <button class="nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded="false">MENU</button>
     <div class="header-menu" data-header-menu>
       <nav class="site-nav" aria-label="Primary navigation">
-        <a class="" href="index.html">Home</a>
+        <a href="index.html">Home</a>
         <a class="member-only" href="members.html">Members</a>
-        <a class="" href="events.html">Events</a>
+        <a href="events.html">Events</a>
         <a class="staff-only" href="roster.html">Roster</a>
         <div class="nav-dropdown member-only" data-nav-dropdown>
           <button class="nav-dropdown-toggle active" type="button" aria-expanded="false" data-nav-dropdown-toggle>
             Guild Essentials <span class="nav-caret" aria-hidden="true">▾</span>
           </button>
           <div class="nav-dropdown-menu">
-            <a class="" href="bidding.html">Bidding</a>
-            <a class="" href="guides.html">Guides</a>
+            <a href="bidding.html">Bidding</a>
+            <a href="guides.html">Guides</a>
             <a class="active" href="planner.html">EO / GL Planner</a>
           </div>
         </div>
@@ -70,24 +67,134 @@
       </div>
     </div>
   </header>
-  <main class="page">
-    <section class="page-header">
-      <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — EO / GL PLANNER</p>
-      <h1>EO / GL Planner</h1>
-      <p>Tactical planning workspace for TRIAD raids and parties.</p>
+
+  <main class="page planner-page">
+    <section class="page-header planner-titlebar">
+      <div>
+        <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — TACTICAL COMMAND</p>
+        <h1>EO / GL Planner</h1>
+        <p>Build formations for one 80-player mega raid, split into two raids and eight parties per raid.</p>
+      </div>
+      <div class="planner-save-state" data-save-state>Local autosave active</div>
     </section>
-    <section class="section">
-      <h2>Planner</h2>
-      <div class="placeholder">This will become the interactive EO/GL planning tool with your maps, grouped parties, movable pieces, and tactical positioning.</div>
+
+    <section class="planner-shell" data-planner>
+      <aside class="planner-sidebar">
+        <div class="planner-panel">
+          <p class="planner-panel-label">MODE</p>
+          <div class="planner-segmented" role="group" aria-label="Planner mode">
+            <button class="active" type="button" data-mode="EO">EO</button>
+            <button type="button" data-mode="GL">GL</button>
+          </div>
+        </div>
+
+        <div class="planner-panel">
+          <p class="planner-panel-label">EO STRUCTURE</p>
+          <div class="planner-segmented planner-view-switch" role="group" aria-label="EO structure">
+            <button class="active" type="button" data-view="mega">Mega Raid</button>
+            <button type="button" data-view="split">2 Raids</button>
+          </div>
+          <p class="planner-help">Mega Raid shows all 80 players together. Two Raids lets you independently hide Raid 1 or Raid 2 without moving any pieces.</p>
+        </div>
+
+        <div class="planner-panel" data-raid-visibility>
+          <div class="planner-panel-row">
+            <p class="planner-panel-label">RAID VISIBILITY</p>
+            <button class="planner-text-button" type="button" data-show-all>Show all</button>
+          </div>
+          <label class="planner-check">
+            <input type="checkbox" checked data-raid-toggle="1" />
+            <span class="raid-dot raid-one"></span>
+            Raid 1 <small>Parties 1–8</small>
+          </label>
+          <label class="planner-check">
+            <input type="checkbox" checked data-raid-toggle="2" />
+            <span class="raid-dot raid-two"></span>
+            Raid 2 <small>Parties 9–16</small>
+          </label>
+        </div>
+
+        <div class="planner-panel">
+          <div class="planner-panel-row">
+            <p class="planner-panel-label">PARTIES</p>
+            <button class="planner-text-button" type="button" data-clear-party-filter>All</button>
+          </div>
+          <div class="party-grid" data-party-grid></div>
+        </div>
+
+        <div class="planner-panel">
+          <p class="planner-panel-label">EDIT HISTORY</p>
+          <div class="planner-button-row">
+            <button class="button" type="button" data-undo disabled>Undo</button>
+            <button class="button" type="button" data-redo disabled>Redo</button>
+          </div>
+          <button class="button planner-full-button" type="button" data-reset-layout>Reset Layout</button>
+        </div>
+
+        <div class="planner-panel">
+          <p class="planner-panel-label">FORMATIONS</p>
+          <div class="planner-save-form">
+            <input type="text" maxlength="40" placeholder="Formation name" data-formation-name />
+            <button class="button primary" type="button" data-save-formation>Save</button>
+          </div>
+          <div class="planner-formations" data-formations></div>
+        </div>
+
+        <div class="planner-panel">
+          <p class="planner-panel-label">ACCESSIBILITY</p>
+          <label class="planner-check">
+            <input type="checkbox" data-reduced-motion />
+            Reduce token motion
+          </label>
+        </div>
+      </aside>
+
+      <div class="planner-workspace">
+        <div class="planner-toolbar">
+          <div>
+            <strong data-board-title>EO — Mega Raid</strong>
+            <span data-board-subtitle>80 players · 16 parties · 2 raids</span>
+          </div>
+          <div class="planner-legend">
+            <span><i class="party-color c1"></i>Party A</span>
+            <span><i class="party-color c2"></i>Party B</span>
+            <span><i class="party-color c3"></i>Party C</span>
+            <span><i class="party-color c4"></i>Party D</span>
+          </div>
+        </div>
+
+        <div class="planner-board-wrap">
+          <div class="planner-board" data-board tabindex="0" aria-label="Tactical planning board">
+            <div class="planner-map-grid" aria-hidden="true"></div>
+            <div class="planner-map-label planner-map-label-top">NORTH / ENTRY</div>
+            <div class="planner-map-label planner-map-label-center">OBJECTIVE</div>
+            <div class="planner-map-label planner-map-label-bottom">SOUTH / BACKLINE</div>
+            <div class="planner-raid-zone planner-raid-zone-one" data-raid-zone="1"><span>RAID 1</span></div>
+            <div class="planner-raid-zone planner-raid-zone-two" data-raid-zone="2"><span>RAID 2</span></div>
+            <div class="planner-tokens" data-token-layer></div>
+          </div>
+        </div>
+
+        <div class="planner-notes-wrap">
+          <label>
+            <span>Strategy Notes</span>
+            <textarea rows="4" placeholder="Callouts, rotations, regroup points, assignments..." data-notes></textarea>
+          </label>
+          <p>Saved automatically in this browser with the current formation.</p>
+        </div>
+      </div>
     </section>
   </main>
+
   <footer>
-    <span class="footer-brand"><span class="brand-logo ">
-        <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
-        <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
-      </span><span>TRIAD</span></span>
-    <span>EO / GL Planner</span>
+    <span class="footer-brand"><span class="brand-logo">
+      <img class="logo-on-dark" src="assets/logo/triad-mark-on-dark.svg" alt="" />
+      <img class="logo-on-light" src="assets/logo/triad-mark-on-light.svg" alt="" />
+    </span><span>TRIAD</span></span>
+    <span>EO / GL Tactical Planner</span>
   </footer>
+
   <script src="js/main.js"></script>
+  <script src="js/planner.js"></script>
 </body>
 </html>

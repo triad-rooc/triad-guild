@@ -35,6 +35,18 @@
     })();
   </script>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .admin-bidding-tabs{display:flex;gap:6px;margin:18px 0;border-bottom:1px solid var(--line,rgba(255,255,255,.14))}
+    .admin-bidding-tabs button{border:0;border-bottom:2px solid transparent;background:transparent;color:inherit;padding:11px 14px;cursor:pointer;font:inherit;font-size:.78rem;font-weight:800;letter-spacing:.04em}
+    .admin-bidding-tabs button.active{border-bottom-color:currentColor}
+    .admin-subheading{margin:12px 0}
+    .admin-mock-shortcuts{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+    .admin-mock-shortcuts a{border:1px solid var(--line,rgba(255,255,255,.14));border-radius:999px;padding:7px 11px;color:inherit;text-decoration:none;font-size:.74rem}
+    .admin-mock-shortcuts a.active{background:currentColor;color:var(--bg,#111)}
+    html[data-theme="light"] .admin-mock-shortcuts a.active{background:#111;color:#fff}
+    .admin-mock-frame{display:block;width:100%;height:980px;border:1px solid var(--line,rgba(255,255,255,.14));border-radius:12px;background:transparent}
+    @media(max-width:720px){.admin-mock-frame{height:1200px}}
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -139,37 +151,71 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section admin-bidding-hub" data-admin-bidding-hub>
       <div class="section-heading-row">
         <div>
           <p class="eyebrow"><span class="section-marker">⟁</span>BIDDING MANAGEMENT</p>
-          <h2>Assign Bidding</h2>
+          <h2>Bidding Control Center</h2>
         </div>
-        <a class="button" href="bidding.html">Open Bidding Monitor</a>
+        <a class="button" href="bidding.html">Open Member Monitor</a>
       </div>
-      <p class="admin-section-note">Assign each member's next bidding category, page, slot, and guild event. Choosing an event automatically sets its next date, and you can still override the date manually.</p>
+      <p class="admin-section-note">Manage live assignments or switch to the isolated 80-player mock sandbox without leaving Admin.</p>
 
-      <div class="bidding-admin-toolbar">
-        <label class="roster-search">
-          <span>Search Member</span>
-          <input type="search" placeholder="IGN or Job" data-bidding-admin-search />
-        </label>
-        <label class="roster-control">
-          <span>Category</span>
-          <select data-bidding-admin-filter>
-            <option value="all">All Categories</option>
-            <option value="Illusion Card Fragment">Illusion Card Fragment</option>
-            <option value="Light & Dark Feathers">Light & Dark Feathers</option>
-            <option value="Time & Space Feathers">Time & Space Feathers</option>
-            <option value="none">No Bidding Assigned</option>
-          </select>
-        </label>
+      <div class="admin-bidding-tabs" role="tablist" aria-label="Bidding management">
+        <button class="active" type="button" role="tab" aria-selected="true" data-admin-bidding-tab="manager">Bidding Manager</button>
+        <button type="button" role="tab" aria-selected="false" data-admin-bidding-tab="mock">Mock Bidding</button>
       </div>
 
-      <div class="bidding-admin-list" data-bidding-admin-list>
-        <div class="placeholder">Loading bidding assignments...</div>
+      <div data-admin-bidding-panel="manager">
+        <div class="section-heading-row admin-subheading">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>LIVE</p>
+            <h3>Assign Bidding</h3>
+          </div>
+          <a class="button" href="bidding-manage.html">Open Full Cycle Manager</a>
+        </div>
+        <p class="admin-section-note">Assign each member's next bidding category, page, slot, and guild event. Choosing an event automatically sets its next date, and you can still override the date manually.</p>
+
+        <div class="bidding-admin-toolbar">
+          <label class="roster-search">
+            <span>Search Member</span>
+            <input type="search" placeholder="IGN or Job" data-bidding-admin-search />
+          </label>
+          <label class="roster-control">
+            <span>Category</span>
+            <select data-bidding-admin-filter>
+              <option value="all">All Categories</option>
+              <option value="Illusion Card Fragment">Illusion Card Fragment</option>
+              <option value="Light & Dark Feathers">Light & Dark Feathers</option>
+              <option value="Time & Space Feathers">Time & Space Feathers</option>
+              <option value="none">No Bidding Assigned</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="bidding-admin-list" data-bidding-admin-list>
+          <div class="placeholder">Loading bidding assignments...</div>
+        </div>
+        <p class="profile-form-status" data-bidding-admin-status aria-live="polite"></p>
       </div>
-      <p class="profile-form-status" data-bidding-admin-status aria-live="polite"></p>
+
+      <div data-admin-bidding-panel="mock" hidden>
+        <div class="section-heading-row admin-subheading">
+          <div>
+            <p class="eyebrow"><span class="section-marker">⟁</span>TEST MODE</p>
+            <h3>Mock Bidding Sandbox</h3>
+          </div>
+          <a class="button" href="mock-bidding.html">Open Full Screen</a>
+        </div>
+        <p class="admin-section-note">Synthetic Player 1–80 data only. This sandbox does not change live member profiles, live sign-ups, or live bidding records.</p>
+        <nav class="admin-mock-shortcuts" aria-label="Mock bidding views">
+          <a href="mock-bidding-calendar.html">Calendar</a>
+          <a href="mock-bidding-schedule.html">Schedule</a>
+          <a href="mock-bidding-requests.html">Requests</a>
+          <a class="active" href="mock-bidding.html">Manage Sandbox</a>
+        </nav>
+        <iframe class="admin-mock-frame" src="mock-bidding.html?embed=1" title="Mock Bidding Sandbox" loading="lazy"></iframe>
+      </div>
     </section>
 
   </main>
@@ -185,5 +231,26 @@
   <script src="js/main.js"></script>
   <script src="js/admin.js"></script>
   <script src="js/admin-bidding.js"></script>
+  <script>
+    (() => {
+      const hub = document.querySelector('[data-admin-bidding-hub]');
+      if (!hub) return;
+      const tabs = [...hub.querySelectorAll('[data-admin-bidding-tab]')];
+      const panels = [...hub.querySelectorAll('[data-admin-bidding-panel]')];
+      const select = (name) => {
+        tabs.forEach((tab) => {
+          const active = tab.dataset.adminBiddingTab === name;
+          tab.classList.toggle('active', active);
+          tab.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        panels.forEach((panel) => { panel.hidden = panel.dataset.adminBiddingPanel !== name; });
+        try { sessionStorage.setItem('triad-admin-bidding-tab', name); } catch (_) {}
+      };
+      tabs.forEach((tab) => tab.addEventListener('click', () => select(tab.dataset.adminBiddingTab)));
+      let initial = 'manager';
+      try { initial = sessionStorage.getItem('triad-admin-bidding-tab') || 'manager'; } catch (_) {}
+      select(initial === 'mock' ? 'mock' : 'manager');
+    })();
+  </script>
 </body>
 </html>
