@@ -95,6 +95,36 @@
     q('[data-capacity-summary]').textContent = (state.summary?.totalCapacity || 0) + ' complete packages available / 80 base slots';
   };
 
+  const rangeRow = (label, key, quantity, range, required) => {
+    const safe = range || { startPage: 1, startSlot: 1, endPage: 1, endSlot: 1 };
+    return (
+      '<div class="cycle-range-row">' +
+        '<strong>' + escapeHtml(label) + '<small>need ' + required + '</small></strong>' +
+        '<input type="number" min="0" value="' + quantity + '" data-stock="' + key + '" />' +
+        '<input type="number" min="1" value="' + safe.startPage + '" data-range="' + key + '-start-page" />' +
+        '<input type="number" min="1" max="4" value="' + safe.startSlot + '" data-range="' + key + '-start-slot" />' +
+        '<input type="number" min="1" value="' + safe.endPage + '" data-range="' + key + '-end-page" />' +
+        '<input type="number" min="1" max="4" value="' + safe.endSlot + '" data-range="' + key + '-end-slot" />' +
+      '</div>'
+    );
+  };
+
+  const ffaSummary = (event, bidderCount) => {
+    const count = Math.max(0, Number(bidderCount || 0));
+    const fragment = Math.max(0, Number(event.stock.fragment || 0) - (count * Number(state.cycle.limits.fragment || 0)));
+    const lightDark = Math.max(0, Number(event.stock.lightDark || 0) - (count * Number(state.cycle.limits.lightDark || 0)));
+    const timeSpace = Math.max(0, Number(event.stock.timeSpace || 0) - (count * Number(state.cycle.limits.timeSpace || 0)));
+
+    return (
+      '<div class="cycle-ffa-summary">' +
+        '<span><b>FFA / Excess</b> after ' + count + ' bidder' + (count === 1 ? '' : 's') + '</span>' +
+        '<strong>Fragments ' + fragment + '</strong>' +
+        '<strong>L&D ' + lightDark + '</strong>' +
+        '<strong>T&S ' + timeSpace + '</strong>' +
+      '</div>'
+    );
+  };
+
   const renderEvents = () => {
     if (!state.cycle) return;
 
@@ -103,6 +133,7 @@
       const requiredLightDark = event.baseCapacity * state.cycle.limits.lightDark;
       const requiredTimeSpace = event.baseCapacity * state.cycle.limits.timeSpace;
       const used = state.assignments.filter((item) => item.eventId === event.id && item.scheduleStatus === 'scheduled').length;
+      const ffaBidderCount = used > 0 ? used : event.effectiveCapacity;
 
       return (
         '<article class="cycle-event-card" data-event-card="' + event.id + '">' +
@@ -110,12 +141,14 @@
             '<div><span>' + escapeHtml(event.type) + ' · EVENT ' + event.order + '</span><strong>' + escapeHtml(event.label) + '</strong><small>' + escapeHtml(formatDate(event.biddingDate)) + '</small></div>' +
             '<b>' + used + '/' + event.effectiveCapacity + '</b>' +
           '</div>' +
-          '<div class="cycle-stock-grid">' +
-            '<label><span>Fragments <small>need ' + requiredFragment + '</small></span><input type="number" min="0" value="' + event.stock.fragment + '" data-stock="fragment" /></label>' +
-            '<label><span>Light & Dark <small>need ' + requiredLightDark + '</small></span><input type="number" min="0" value="' + event.stock.lightDark + '" data-stock="lightDark" /></label>' +
-            '<label><span>Time & Space <small>need ' + requiredTimeSpace + '</small></span><input type="number" min="0" value="' + event.stock.timeSpace + '" data-stock="timeSpace" /></label>' +
+          '<div class="cycle-range-table">' +
+            '<div class="cycle-range-head"><span>Item</span><span>Qty</span><span>Start Page</span><span>Start Slot</span><span>End Page</span><span>End Slot</span></div>' +
+            rangeRow('Fragments', 'fragment', event.stock.fragment, event.ranges?.fragment, requiredFragment) +
+            rangeRow('Light & Dark', 'lightDark', event.stock.lightDark, event.ranges?.lightDark, requiredLightDark) +
+            rangeRow('Time & Space', 'timeSpace', event.stock.timeSpace, event.ranges?.timeSpace, requiredTimeSpace) +
           '</div>' +
-          '<div class="cycle-event-foot"><span>Base ' + event.baseCapacity + ' · Stock supports ' + event.effectiveCapacity + '</span><button class="button" type="button" data-save-stock="' + event.id + '">Save Stock</button></div>' +
+          ffaSummary(event, ffaBidderCount) +
+          '<div class="cycle-event-foot"><span>Base ' + event.baseCapacity + ' · Stock supports ' + event.effectiveCapacity + '</span><button class="button" type="button" data-save-stock="' + event.id + '">Save Stock & Range</button></div>' +
         '</article>'
       );
     }).join('');
@@ -318,9 +351,21 @@
         fragmentStock: Number(card.querySelector('[data-stock="fragment"]').value),
         lightDarkStock: Number(card.querySelector('[data-stock="lightDark"]').value),
         timeSpaceStock: Number(card.querySelector('[data-stock="timeSpace"]').value),
+        fragmentStartPage: Number(card.querySelector('[data-range="fragment-start-page"]').value),
+        fragmentStartSlot: Number(card.querySelector('[data-range="fragment-start-slot"]').value),
+        fragmentEndPage: Number(card.querySelector('[data-range="fragment-end-page"]').value),
+        fragmentEndSlot: Number(card.querySelector('[data-range="fragment-end-slot"]').value),
+        lightDarkStartPage: Number(card.querySelector('[data-range="lightDark-start-page"]').value),
+        lightDarkStartSlot: Number(card.querySelector('[data-range="lightDark-start-slot"]').value),
+        lightDarkEndPage: Number(card.querySelector('[data-range="lightDark-end-page"]').value),
+        lightDarkEndSlot: Number(card.querySelector('[data-range="lightDark-end-slot"]').value),
+        timeSpaceStartPage: Number(card.querySelector('[data-range="timeSpace-start-page"]').value),
+        timeSpaceStartSlot: Number(card.querySelector('[data-range="timeSpace-start-slot"]').value),
+        timeSpaceEndPage: Number(card.querySelector('[data-range="timeSpace-end-page"]').value),
+        timeSpaceEndSlot: Number(card.querySelector('[data-range="timeSpace-end-slot"]').value),
       });
       await load();
-      setStatus('Stock saved. Capacity recalculated without reducing anyone’s package.', 'success');
+      setStatus(isMock ? 'Mock totals and page/slot ranges saved. Bidder ranges and FFA excess recalculated.' : 'Stock saved. Capacity recalculated without reducing anyone’s package.', 'success');
     } catch (error) {
       setStatus(error.message, 'error');
     }

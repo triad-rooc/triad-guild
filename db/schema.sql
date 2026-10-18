@@ -150,6 +150,8 @@ CREATE TABLE IF NOT EXISTS mock_bidding_cycles (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- Stock columns are the total item quantities for the event.
+-- Per-member limits live on mock_bidding_cycles; the difference becomes FFA/excess.
 CREATE TABLE IF NOT EXISTS mock_bidding_events (
   id BIGSERIAL PRIMARY KEY,
   cycle_id BIGINT NOT NULL REFERENCES mock_bidding_cycles(id) ON DELETE CASCADE,
@@ -161,6 +163,18 @@ CREATE TABLE IF NOT EXISTS mock_bidding_events (
   fragment_stock INTEGER NOT NULL DEFAULT 0,
   light_dark_stock INTEGER NOT NULL DEFAULT 0,
   time_space_stock INTEGER NOT NULL DEFAULT 0,
+  fragment_start_page INTEGER,
+  fragment_start_slot INTEGER,
+  fragment_end_page INTEGER,
+  fragment_end_slot INTEGER,
+  light_dark_start_page INTEGER,
+  light_dark_start_slot INTEGER,
+  light_dark_end_page INTEGER,
+  light_dark_end_slot INTEGER,
+  time_space_start_page INTEGER,
+  time_space_start_slot INTEGER,
+  time_space_end_page INTEGER,
+  time_space_end_slot INTEGER,
   effective_capacity INTEGER NOT NULL DEFAULT 0,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE (cycle_id, event_order)

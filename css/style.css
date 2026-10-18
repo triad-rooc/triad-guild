@@ -4254,3 +4254,118 @@ footer {
     padding: 18px;
   }
 }
+
+
+/* Mock item page/slot range editor */
+.cycle-range-table {
+  display: grid;
+  gap: 1px;
+  background: var(--line);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cycle-range-head,
+.cycle-range-row {
+  display: grid;
+  grid-template-columns: minmax(130px, 1.2fr) repeat(5, minmax(72px, .7fr));
+  gap: 1px;
+  background: var(--line);
+}
+
+.cycle-range-head > span,
+.cycle-range-row > * {
+  min-width: 0;
+  background: var(--panel);
+}
+
+.cycle-range-head > span {
+  padding: 9px 10px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.cycle-range-row > strong {
+  display: grid;
+  align-content: center;
+  padding: 10px;
+  font-size: 11px;
+}
+
+.cycle-range-row > strong small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.cycle-range-row input {
+  width: 100%;
+  min-height: 44px;
+  border: 0;
+  outline: 0;
+  padding: 0 9px;
+  background: var(--bg);
+  color: var(--text);
+  text-align: center;
+  font: inherit;
+}
+
+@media (max-width: 700px) {
+  .cycle-range-table {
+    overflow-x: auto;
+  }
+
+  .cycle-range-head,
+  .cycle-range-row {
+    min-width: 650px;
+  }
+}
+
+
+/* Mock FFA excess summary */
+.cycle-ffa-summary {
+  display: grid;
+  grid-template-columns: minmax(180px, 1.4fr) repeat(3, minmax(90px, .7fr));
+  gap: 1px;
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.cycle-ffa-summary > * {
+  min-width: 0;
+  padding: 11px 12px;
+  background: var(--panel-2);
+}
+
+.cycle-ffa-summary span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.cycle-ffa-summary span b {
+  color: var(--text);
+  margin-right: 6px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.cycle-ffa-summary strong {
+  font-size: 10px;
+  text-align: center;
+  letter-spacing: .04em;
+}
+
+@media (max-width: 700px) {
+  .cycle-ffa-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .cycle-ffa-summary strong {
+    text-align: left;
+  }
+}
