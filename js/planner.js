@@ -209,10 +209,8 @@
     }
 
     const hiddenRaid = state.mode === 'EO'
-      && state.view === 'split'
       && !state.raids[raidForParty(partyNumber)];
     token.classList.toggle('hidden-raid', hiddenRaid);
-    token.classList.toggle('filtered', selectedParty !== null && selectedParty !== partyNumber);
 
     tokenLayer.appendChild(token);
   };
@@ -273,7 +271,7 @@
     partySplitButton.textContent = party?.split
       ? `Merge Party ${selectedParty}`
       : `Split Party ${selectedParty} into 5 players`;
-    partyHelp.textContent = `Party ${selectedParty} selected. Click the same party again or All to clear focus.`;
+    partyHelp.textContent = `Party ${selectedParty} selected. Other parties stay visible. Click the same party again or All to clear selection.`;
   };
 
   const render = () => {
@@ -291,6 +289,10 @@
     );
     root.querySelectorAll('[data-raid-toggle]').forEach((input) => {
       input.checked = Boolean(state.raids[input.dataset.raid]);
+    });
+    root.querySelectorAll('[data-raid-zone]').forEach((zone) => {
+      const raid = zone.dataset.raidZone;
+      zone.hidden = state.mode !== 'EO' || !state.raids[raid];
     });
     root.querySelectorAll('[data-eo-only]').forEach((element) => { element.hidden = state.mode !== 'EO'; });
     root.querySelectorAll('[data-gl-only]').forEach((element) => { element.hidden = state.mode !== 'GL'; });
@@ -458,7 +460,7 @@
 
   tokenLayer.addEventListener('pointerdown', (event) => {
     const token = event.target.closest('.planner-token');
-    if (!token || token.classList.contains('filtered')) return;
+    if (!token) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
 
     const partyNumber = Number(token.dataset.party);
