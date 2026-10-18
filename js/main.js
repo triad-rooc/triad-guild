@@ -1,8 +1,22 @@
 (() => {
   // TRIAD lightweight preloader: show briefly on full page loads, then fade away.
+  const preloader = document.createElement('div');
+  preloader.className = 'triad-preloader';
+  preloader.setAttribute('aria-hidden', 'true');
+  preloader.innerHTML =
+    '<div class="triad-preloader-inner">' +
+      '<strong>TRIAD</strong>' +
+      '<span>RAGNAROK ORIGIN CLASSIC</span>' +
+      '<small>LOADING</small>' +
+      '<i></i>' +
+    '</div>';
+  document.body.prepend(preloader);
+
   const markPageReady = () => {
     window.setTimeout(() => {
       document.body?.classList.add('page-ready');
+      preloader.classList.add('is-leaving');
+      window.setTimeout(() => preloader.remove(), 700);
     }, 420);
   };
 
@@ -10,7 +24,7 @@
     markPageReady();
   } else {
     window.addEventListener('load', markPageReady, { once: true });
-    window.setTimeout(() => document.body?.classList.add('page-ready'), 1400);
+    window.setTimeout(markPageReady, 1400);
   }
 
   const root = document.documentElement;
