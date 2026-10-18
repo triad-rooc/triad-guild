@@ -1,4 +1,18 @@
 (() => {
+  // TRIAD lightweight preloader: show briefly on full page loads, then fade away.
+  const markPageReady = () => {
+    window.setTimeout(() => {
+      document.body?.classList.add('page-ready');
+    }, 420);
+  };
+
+  if (document.readyState === 'complete') {
+    markPageReady();
+  } else {
+    window.addEventListener('load', markPageReady, { once: true });
+    window.setTimeout(() => document.body?.classList.add('page-ready'), 1400);
+  }
+
   const root = document.documentElement;
   const navToggle = document.querySelector('.nav-toggle');
   const headerMenu = document.querySelector('[data-header-menu]');
