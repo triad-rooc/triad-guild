@@ -24,7 +24,7 @@
 
   const MAPS = {
     EO: [
-      { key: 'world', label: 'World Map', src: '/assets/planner/eo-world.webp', ratio: '560 / 315' },
+      { key: 'world', label: 'World Map', src: '/assets/planner/eo-world-clean.webp', ratio: '560 / 315' },
       { key: 'castle', label: 'Inside Castle', src: '/assets/planner/eo-castle.webp', ratio: '560 / 453' },
       { key: 'emp', label: 'Emperium Room', src: '/assets/planner/eo-emperium-room.webp', ratio: '560 / 394' },
     ],
