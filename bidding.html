@@ -74,49 +74,58 @@
   <main class="page">
     <section class="page-header">
       <p class="eyebrow"><span class="section-marker">⟁</span>TRIAD — BIDDING</p>
-      <h1>Bidding Cycle</h1>
-      <p>Every two weeks all members are distributed across 4 Guild Leagues and 2 Emperium Overruns using equal item allocations.</p>
+      <h1>Bidding</h1>
+      <p>View the active bidding cycle, the complete guild bidding list, and your own assignment. Member access is view-only.</p>
     </section>
 
-    <section class="section">
+    <section class="section bidding-overview">
       <div class="section-heading-row">
         <div>
           <p class="eyebrow"><span class="section-marker">⟁</span>CURRENT CYCLE</p>
           <h2 data-public-cycle-title>Loading...</h2>
         </div>
-        <div class="bidding-heading-actions">
-          <p class="directory-count" data-public-cycle-summary></p>
-          <div class="staff-only"><a class="button primary" href="bidding-manage.html">Manage Cycle</a></div>
-        </div>
+        <p class="directory-count" data-public-cycle-summary></p>
       </div>
-
       <div class="public-cycle-limits" data-public-limits></div>
     </section>
 
-    <section class="section">
+    <nav class="bidding-view-tabs" role="tablist" aria-label="Bidding views">
+      <button class="active" type="button" role="tab" aria-selected="true" data-bidding-view-tab="calendar">Bidding Calendar</button>
+      <button type="button" role="tab" aria-selected="false" data-bidding-view-tab="list">Bidding List</button>
+      <button type="button" role="tab" aria-selected="false" data-bidding-view-tab="personal">Personal Bidding Schedule</button>
+    </nav>
+
+    <section class="section bidding-view-panel" data-bidding-view-panel="calendar">
       <div class="section-heading-row">
         <div>
-          <p class="eyebrow"><span class="section-marker">⟁</span>TWO-WEEK SCHEDULE</p>
-          <h2>Cycle Schedule</h2>
+          <p class="eyebrow"><span class="section-marker">⟁</span>TWO-WEEK VIEW</p>
+          <h2>Bidding Calendar</h2>
         </div>
-        <p class="directory-count">Select an event to view its bidders</p>
+        <p class="directory-count">Cycle 1 / Cycle 2</p>
       </div>
-
-      <div class="bidding-schedule-grid" data-public-schedule>
-        <div class="placeholder">Loading bidding cycle...</div>
-      </div>
+      <div data-public-calendar><div class="placeholder">Loading bidding calendar...</div></div>
     </section>
 
-    <section class="section" data-public-bidders-section hidden>
+    <section class="section bidding-view-panel" data-bidding-view-panel="list" hidden>
       <div class="section-heading-row">
         <div>
-          <p class="eyebrow"><span class="section-marker">⟁</span>EVENT BIDDERS</p>
-          <h2 data-public-bidders-title>Event Bidders</h2>
+          <p class="eyebrow"><span class="section-marker">⟁</span>GUILD VIEW</p>
+          <h2>Bidding List</h2>
         </div>
-        <button class="button" type="button" data-public-close-bidders>Back to Schedule</button>
+        <p class="directory-count" data-public-list-count></p>
       </div>
+      <div class="member-bidding-list" data-public-bidding-list><div class="placeholder">Loading bidding list...</div></div>
+    </section>
 
-      <div class="public-cycle-events" data-public-events></div>
+    <section class="section bidding-view-panel" data-bidding-view-panel="personal" hidden>
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>MY ASSIGNMENT</p>
+          <h2>Personal Bidding Schedule</h2>
+        </div>
+        <p class="directory-count">Current cycle</p>
+      </div>
+      <div class="personal-bidding-schedule" data-public-personal><div class="placeholder">Loading your bidding schedule...</div></div>
     </section>
   </main>
 
@@ -128,7 +137,7 @@
       </span>
       <span>TRIAD</span>
     </span>
-    <span>Bidding Cycle</span>
+    <span>Bidding</span>
   </footer>
 
   <script src="js/main.js"></script>

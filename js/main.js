@@ -86,6 +86,33 @@
     bindDropdowns();
   };
 
+  const ensureMemberBiddingNav = () => {
+    const nav = document.querySelector('.site-nav');
+    if (!nav) return;
+
+    nav.querySelectorAll('.nav-dropdown-menu a[href="bidding.html"]').forEach((link) => link.remove());
+
+    let biddingLink = nav.querySelector(':scope > a[href="bidding.html"]');
+    if (!biddingLink) {
+      biddingLink = document.createElement('a');
+      biddingLink.href = 'bidding.html';
+      biddingLink.textContent = 'Bidding';
+      biddingLink.className = 'member-only';
+      const eventsLink = nav.querySelector(':scope > a[href="events.html"]');
+      if (eventsLink) eventsLink.insertAdjacentElement('afterend', biddingLink);
+      else nav.appendChild(biddingLink);
+    }
+
+    if (window.location.pathname.endsWith('/bidding.html')) biddingLink.classList.add('active');
+
+    const essentials = nav.querySelector('[data-nav-dropdown]');
+    if (essentials && !essentials.querySelector('.nav-dropdown-menu a.active')) {
+      essentials.querySelector('[data-nav-dropdown-toggle]')?.classList.remove('active');
+    }
+  };
+
+  ensureMemberBiddingNav();
+
   const updateThemeButton = () => {
     if (!themeToggle) return;
     const current = getTheme();
