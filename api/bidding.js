@@ -1,4 +1,4 @@
-import { requireCouncil, requireSameOrigin, requireSession } from '../lib/api-auth.js';
+import { requireSameOrigin, requireSession, requireStaff } from '../lib/api-auth.js';
 import { databaseError, ensureSchema, getSql } from '../lib/db.js';
 
 const CATEGORIES = [
@@ -79,7 +79,7 @@ export default async function handler(req, res) {
       return res.status(405).json({ error: 'method_not_allowed' });
     }
 
-    const session = requireCouncil(req, res);
+    const session = requireStaff(req, res);
     if (!session) return;
     if (!requireSameOrigin(req, res)) return;
 

@@ -6,8 +6,19 @@
   const dropdown = document.querySelector('[data-nav-dropdown]');
   const dropdownToggle = document.querySelector('[data-nav-dropdown-toggle]');
   const loginLink = document.querySelector('[data-login-link]');
+  const accountNav = document.querySelector('.account-nav');
 
   const getTheme = () => root.dataset.theme || 'dark';
+
+  const ensureAccountLink = (href, label) => {
+    if (!accountNav || accountNav.querySelector(`a[href="${href}"]`)) return;
+    const link = document.createElement('a');
+    link.href = href;
+    link.textContent = label;
+    if (window.location.pathname.endsWith(`/${href}`)) link.classList.add('active');
+    const before = accountNav.querySelector('.profile-link, .logout-link, [data-theme-toggle]');
+    accountNav.insertBefore(link, before || null);
+  };
 
   const updateThemeButton = () => {
     if (!themeToggle) return;
@@ -64,6 +75,12 @@
 
         if (session.user.role === 'Council' || session.user.role === 'Officer') {
           root.classList.add('auth-staff');
+          ensureAccountLink('bidding-manage.html', 'Bidding Manager');
+        }
+
+        if (session.user.role === 'Council') {
+          root.classList.add('auth-council');
+          ensureAccountLink('admin.html', 'Admin');
         }
       })
       .catch(() => {});

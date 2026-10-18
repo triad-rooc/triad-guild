@@ -10,6 +10,7 @@ export const config = {
   matcher: [
     '/members.html',
     '/bidding.html',
+    '/bidding-manage.html',
     '/guides.html',
     '/planner.html',
     '/profile.html',
@@ -32,7 +33,7 @@ export default function middleware(request) {
 
   const pathname = new URL(request.url).pathname;
 
-  if (pathname === '/roster.html' && !['Council', 'Officer'].includes(session.role)) {
+  if (['/roster.html', '/bidding-manage.html'].includes(pathname) && !['Council', 'Officer'].includes(session.role)) {
     return Response.redirect(new URL('/members.html', request.url), 302);
   }
 
