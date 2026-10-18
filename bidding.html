@@ -80,22 +80,29 @@
     </section>
 
     <section class="section">
-      <div class="cycle-tools">
-        <label class="roster-search">
-          <span>Search</span>
-          <input type="search" placeholder="IGN, job, or event" data-public-search />
-        </label>
-        <label class="roster-control">
-          <span>Event</span>
-          <select data-public-event>
-            <option value="all">All Events</option>
-          </select>
-        </label>
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>TWO-WEEK SCHEDULE</p>
+          <h2>Cycle Schedule</h2>
+        </div>
+        <p class="directory-count">Select an event to view its bidders</p>
       </div>
 
-      <div class="public-cycle-events" data-public-events>
+      <div class="bidding-schedule-grid" data-public-schedule>
         <div class="placeholder">Loading bidding cycle...</div>
       </div>
+    </section>
+
+    <section class="section" data-public-bidders-section hidden>
+      <div class="section-heading-row">
+        <div>
+          <p class="eyebrow"><span class="section-marker">⟁</span>EVENT BIDDERS</p>
+          <h2 data-public-bidders-title>Event Bidders</h2>
+        </div>
+        <button class="button" type="button" data-public-close-bidders>Back to Schedule</button>
+      </div>
+
+      <div class="public-cycle-events" data-public-events></div>
     </section>
   </main>
 

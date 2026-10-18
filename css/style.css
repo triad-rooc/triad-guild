@@ -4167,3 +4167,90 @@ footer {
     flex: 1 1 auto;
   }
 }
+
+
+/* Bidding cycle schedule view */
+.bidding-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.bidding-schedule-card {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.bidding-schedule-card-head {
+  display: grid;
+  gap: 5px;
+}
+
+.bidding-schedule-card-head > span,
+.bidding-schedule-count > span {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+
+.bidding-schedule-card-head > strong {
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.bidding-schedule-card-head > small {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.bidding-schedule-count {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.bidding-schedule-count > strong {
+  font-size: 34px;
+  letter-spacing: -.05em;
+}
+
+.bidding-schedule-stock {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.bidding-schedule-stock span {
+  padding: 9px 6px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .bidding-schedule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .bidding-schedule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bidding-schedule-card {
+    padding: 18px;
+  }
+}
